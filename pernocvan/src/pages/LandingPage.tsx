@@ -1,5 +1,4 @@
 import React from 'react';
-// Importamos los componentes que acabas de rellenar
 import { Hero } from '../components/landing/Hero';
 import { Features } from '../components/landing/Features';
 

@@ -3,6 +3,7 @@ import { Routes, Route } from 'react-router-dom'; // <-- Importamos los componen
 import { AppLayout } from '../layouts/AppLayout';
 import { LandingPage } from '../pages/LandingPage';
 import { MapPage } from '../pages/MapPage';
+import LoginPage from '../pages/LoginPage';
 
 function App() {
   return (
@@ -11,6 +12,7 @@ function App() {
         {/* Ruta principal: muestra la Landing Page */}
         <Route path="/" element={<LandingPage />} />
         <Route path="/mapa" element={<MapPage />} />
+        <Route path="/login" element={<LoginPage />} />
       </Routes>
     </AppLayout>
   );

@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 
 export const Header = () => {
@@ -18,9 +19,13 @@ export const Header = () => {
 
         {/* Acciones de Usuario (Autenticación) */}
         <div className="auth-actions flex gap-3">
+        
+        <Link to="/login">
           <button className="px-4 py-2 text-green-700 bg-white border border-green-700 rounded hover:bg-green-50 transition">
             Iniciar Sesión
           </button>
+        </Link>
+
           <button className="px-4 py-2 text-white bg-green-700 rounded hover:bg-green-800 transition">
             Registrarse
           </button>
