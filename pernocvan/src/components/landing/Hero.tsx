@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom'; // <-- 1. IMPORTANTE: Añadimos esta línea
 
 export const Hero = () => {
   return (
@@ -17,16 +18,21 @@ export const Hero = () => {
             </p>
             
             <div className="mt-8 sm:max-w-lg sm:mx-auto sm:text-center lg:text-left lg:mx-0 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-              <button className="px-8 py-3 border border-transparent text-base font-bold rounded-full text-white bg-green-600 hover:bg-green-700 transition-all shadow-md">
+              
+              <Link 
+                to="/mapa"
+                className="px-8 py-3 border border-transparent text-base font-bold rounded-full text-white bg-green-600 hover:bg-green-700 transition-all shadow-md flex items-center justify-center"
+              >
                 Explorar Mapa
-              </button>
+              </Link>
+              
               <button className="px-8 py-3 border-2 border-green-600 text-base font-bold rounded-full text-green-700 bg-white hover:bg-green-50 transition-all shadow-sm">
                 Añadir un sitio
               </button>
             </div>
           </div>
           
-          {/* Imagen (Placeholder) */}
+          {/* Imagen */}
           <div className="mt-12 relative sm:max-w-lg sm:mx-auto lg:mt-0 lg:max-w-none lg:mx-0 lg:col-span-6">
             <div className="relative mx-auto w-full rounded-3xl shadow-xl overflow-hidden aspect-video bg-green-200 flex flex-col items-center justify-center border-4 border-white">
               
