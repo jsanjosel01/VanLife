@@ -34,7 +34,7 @@ export default function SignUpForm() {
         confirmPassword: "",
     });
 
-    // 2. Función para calcular la fuerza
+    // Función para calcular la fuerza
     const calculateStrength = (password: string) => {
         let score = 0;
         if (password.length > 5) score++;
@@ -87,7 +87,7 @@ export default function SignUpForm() {
         setIsLoading(true);
         console.log("Iniciando registro en Supabase para:", formData.email);
         
-        // --- CONEXIÓN REAL A SUPABASE ---
+        // CONEXIÓN REAL A SUPABASE 
         try {
             const { data, error } = await supabase.auth.signUp({
                 // Añadimos .trim() aquí para limpiar espacios invisibles
