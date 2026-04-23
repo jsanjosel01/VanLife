@@ -6,6 +6,7 @@ import { MapPage } from '../pages/MapPage';
 import LoginPage from '../pages/LoginPage';
 import { Toaster } from 'sonner';
 import { SignUpPage } from '../pages/SignUpPage';
+import Profile from '../pages/Profile';
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
         <Route path="/mapa" element={<MapPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignUpPage />} />
+        <Route path="/profile" element={<Profile />} />
 
 
       </Routes>
