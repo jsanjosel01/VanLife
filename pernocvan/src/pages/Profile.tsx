@@ -90,7 +90,11 @@ export default function Profile() {
     return (
         <div className="min-h-screen bg-gray-50 py-10 px-4">
             <div className="max-w-2xl mx-auto">
-                <form onSubmit={handleUpdate} className="bg-white p-8 rounded-2xl border shadow-sm space-y-8">
+                <form 
+    onSubmit={handleUpdate} 
+    className="bg-white p-8 rounded-2xl shadow-sm space-y-8"
+    style={{ border: 'none' }}
+>
                     
                     {/* CABECERA */}
                     <div className="flex items-center justify-between pb-6 border-b ">

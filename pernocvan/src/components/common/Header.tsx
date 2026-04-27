@@ -34,7 +34,15 @@ export const Header = () => {
       <div className="flex justify-between items-center p-4">
         
         <div className="logo-section">
+          
+          <Link to="/" className="flex items-center py-2 gap-2 hover:opacity-80 transition-opacity">
+            <img 
+              src="img/logo.png" 
+              alt="Pernocvan Logo" 
+              className="h-16 w-16 object-contain" 
+            />
             <h1 className="text-2xl font-bold text-primary">Pernocvan</h1>
+          </Link>
         </div>
 
         <div className="auth-actions flex gap-3">
