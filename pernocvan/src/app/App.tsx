@@ -1,5 +1,4 @@
-import React from 'react';
-import { Routes, Route } from 'react-router-dom'; // <-- Importamos los componentes de ruta
+import { Routes, Route } from 'react-router-dom';
 import { AppLayout } from '../layouts/AppLayout';
 import { LandingPage } from '../pages/LandingPage';
 import { MapPage } from '../pages/MapPage';
@@ -8,26 +7,18 @@ import { Toaster } from 'sonner';
 import { SignUpPage } from '../pages/SignUpPage';
 import Profile from '../pages/Profile';
 
-import { Footer } from '../components/common/Footer';
 
 function App() {
   return (
     <AppLayout>
-      
-      <Toaster richColors />
+      <Toaster richColors position="top-right" />
       <Routes>
-
-        {/* Ruta principal: muestra la Landing Page */}
         <Route path="/" element={<LandingPage />} />
         <Route path="/mapa" element={<MapPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignUpPage />} />
         <Route path="/profile" element={<Profile />} />
-
-        
       </Routes>
-
-      
     </AppLayout>
   );
 }
