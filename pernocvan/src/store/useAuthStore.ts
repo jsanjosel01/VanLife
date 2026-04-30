@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { SessionUser } from '../interfaces/SessionUser';
 import { userRepository } from '../database/repositories';
+import { supabase } from '../database/supabase/client';
 
 
 interface AuthState {
@@ -36,11 +37,17 @@ export const useAuthStore = create<AuthState>()(
         });
       },
 
-      clearSession: () => set({
-        sessionUser: null,
-        isAuthenticated: false,
-        isAdmin: false
-      }),
+      clearSession: async () => {
+  // 1. Cerramos sesión en el servidor de Supabase
+  await supabase.auth.signOut();
+
+  // 2. Limpiamos el estado local (esto limpia el localStorage automáticamente)
+  set({
+    sessionUser: null,
+    isAuthenticated: false,
+    isAdmin: false
+  });
+},
     }),
     {
       name: 'auth-v1', // Nombre para el localStorage
