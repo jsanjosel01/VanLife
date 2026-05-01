@@ -12,6 +12,8 @@ export default function LoginForm() {
     const [showPassword, setShowPassword] = useState(false);
     const [formData, setFormData] = useState({ email: "", password: "" });
 
+    const isFormInvalid = !formData.email.includes('@') || formData.password.length < 8;
+
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
         
@@ -60,64 +62,73 @@ export default function LoginForm() {
                 </div>
 
                 <div className="space-y-5">
-                    {/* Email */}
-                    <div className="space-y-2">
-                        <label className="text-sm font-medium text-foreground">
-                            Correo electrónico <span className="text-red-500">*</span>
-                        </label>
-                        <Input 
-                            className="h-12 text-lg" 
-                            type="email" 
-                            placeholder="tucorreo@gmail.com" 
-                            value={formData.email} 
-                            onChange={(e) => setFormData({...formData, email: e.target.value})}
-                        />
+                {/* Email */}
+                <div className="space-y-2">
+                    <div className="flex items-center">
+                    <label className="text-sm font-medium text-foreground">
+                        Correo electrónico <span className="text-red-500">*</span>
+                    </label>
+                    </div>
+                    <Input 
+                    className="h-12 text-lg" 
+                    type="text" 
+                    placeholder="tucorreo@gmail.com" 
+                    value={formData.email} 
+                    onChange={(e) => setFormData({...formData, email: e.target.value})}
+                    />
+                </div>
+                
+                {/* Contraseña */}
+                <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                    <label className="text-sm font-medium text-foreground">
+                        Contraseña <span className="text-red-500">*</span>
+                    </label>
+                    </div>
+
+                    <div className="relative">
+                    <Input 
+                        className="h-12 text-lg pr-14"
+                        type={showPassword ? "text" : "password"}
+                        value={formData.password} 
+                        onChange={(e) => setFormData({...formData, password: e.target.value})}
+                    />
+                    <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-700 cursor-pointer"
+                    >
+                        {showPassword ? <Eye size={22} /> : <EyeOff size={22} />}
+                    </button>
                     </div>
                     
-                    {/* Contraseña */}
-                    <div className="space-y-2">
-                        <div className="flex items-center justify-between">
-                            <label className="text-sm font-medium text-foreground">
-                                Contraseña <span className="text-red-500">*</span>
-                            </label>
-                        </div>
-
-                        <div className="relative">
-                            <Input 
-                                className="h-12 text-lg pr-14"
-                                type={showPassword ? "text" : "password"}
-                                placeholder="Tu contraseña" 
-                                value={formData.password} 
-                                onChange={(e) => setFormData({...formData, password: e.target.value})}
-                            />
-                            <button
-                                type="button"
-                                onClick={() => setShowPassword(!showPassword)}
-                                className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-700"
-                            >
-                                {showPassword ? <EyeOff size={22} /> : <Eye size={22} />}
-                            </button>
-                        </div>
-                        
-                        <div className="text-right">
-                            <Link to="/forgot-password" className="text-sm font-medium text-primary hover:underline">
-                                ¿Has olvidado tu contraseña?
-                            </Link>
-                        </div>
+                    {/* Olvidaste tu contraseña */}
+                    <div className="text-right">
+                    <Link to="/forgot-password"  className="text-sm font-semibold text-primary hover:underline">
+                        ¿Has olvidado tu contraseña?
+                    </Link>
                     </div>
                 </div>
+                </div>
 
-                <Button className="mt-6 h-12 w-full text-lg font-semibold" disabled={isLoading}>
-                    {isLoading ? (
-                        <>
-                            <Loader2 className="mr-2 h-4 w-4 animate-spin" /> 
-                            <span>Iniciando sesión...</span>
-                        </>
-                    ) : (
-                        <span>Iniciar Sesión</span>
-                    )}
+                {/* Iniciar Sesión */}
+                <Button disabled={isLoading}
+                className={`mt-6 h-12 w-full text-lg font-semibold transition-all duration-500 ease-out bg-primary text-primary-foreground shadow-sm
+                    hover:bg-zinc-700 hover:shadow-md active:scale-[0.98]
+                    ${isFormInvalid ? "cursor-not-allowed opacity-90" : "cursor-pointer"} 
+                    disabled:cursor-wait`}
+                >
+                {isLoading ? (
+                    <>
+                    <Loader2 className="mr-2 h-5 w-5 animate-spin" /> 
+                    <span>Iniciando sesión...</span>
+                    </>
+                ) : (
+                    <span>Iniciar Sesión</span>
+                )}
                 </Button>
 
+                {/* Registro */}
                 <p className="mt-4 text-center text-sm text-muted-foreground">
                     ¿No tienes cuenta? {" "}
                     <Link to="/signup" className="font-semibold text-primary hover:underline">
