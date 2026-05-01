@@ -3,7 +3,8 @@ import { supabase } from "../database/supabase/client";
 import { Input } from "../components/ui/input";
 import { Button } from "../components/ui/button";
 import { toast } from "sonner";
-import { AvatarUploader } from "../components/old/AvatarUploader";
+import { AvatarUploader } from "../components/avatar/AvatarUploader";
+import { Loader2 } from "lucide-react";
 
 export default function Profile() {
     const [profile, setProfile] = useState({
@@ -95,26 +96,29 @@ export default function Profile() {
     if (loading) return <div className="p-8 text-center min-h-screen flex items-center justify-center">Cargando perfil...</div>;
 
     return (
-        <div className="min-h-screen bg-gray-50 pt-20 pb-32 px-4">
+        <div className="flex justify-center bg-background pt-10 pb-40 px-4">
             <div className="max-w-2xl mx-auto">
-                <form onSubmit={handleUpdate} className="w-full rounded-2xl border border-gray-200 bg-white p-10 shadow-lg space-y-8">
+                <form onSubmit={handleUpdate} className="w-full rounded-2xl border border-border bg-card p-10 shadow-sm space-y-8 animate-in fade-in duration-500" >
 
                     {/* CABECERA */}
-                    <div className="flex items-center justify-between pb-6 border-b">
-                        <div className="space-y-2">
-                            <span className="inline-flex items-center px-3 py-0.5 rounded-full text-xs font-semibold bg-primary/10 text-primary uppercase tracking-wide w-fit">
+                    <div className="flex items-center justify-between pb-8 mb-4 border-b border-border">
+                        <div className="space-y-3"> 
+                            <span className="inline-flex items-center px-3 py-0.5 rounded-full text-xs font-semibold bg-primary/10 text-primary uppercase tracking-wide">
                                 {profile.rol || "Usuario"}
                             </span>
-                            <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight">
+                            
+                            <h2 className="text-3xl font-bold tracking-tight text-foreground">
                                 {profile.username || "Sin nombre"}
                             </h2>
+                            
                             {memberSince && (
-                                <p className="text-sm text-gray-400">
-                                    Miembro desde {memberSince}
+                                <p className="text-sm text-muted-foreground">
+                                    Miembro desde <span className="font-medium">{memberSince}</span>
                                 </p>
                             )}
                         </div>
 
+                        {/* AVATAR */}
                         <AvatarUploader
                             uid={userId}
                             url={formData.avatar_url}
@@ -129,10 +133,10 @@ export default function Profile() {
                                 Correo Electrónico 🔒
                             </label>
                             <Input disabled value={email} className="bg-gray-100 mt-1 cursor-not-allowed" />
-                            <p className="text-[10px] text-gray-400 mt-1">Bloqueado por seguridad.</p>
+                            <p className="text-[12px] text-gray-400 mt-1">Bloqueado por seguridad.</p>
                         </div>
 
-                        <div className="max-w-sm">
+                        <div className="max-w-xs">
                             <label className="text-sm font-medium text-gray-600">Nombre de usuario</label>
                             <Input 
                                 value={formData.username} 
@@ -179,8 +183,22 @@ export default function Profile() {
                             </div>
                         </div>
     
-                        <Button type="submit" disabled={updating} className="w-full h-12 text-base font-bold bg-primary hover:bg-primary/90 transition-all rounded-full shadow-md">
-                            {updating ? "Guardando..." : "Guardar cambios"}
+                        <Button 
+                            type="submit" 
+                            disabled={updating}
+                            className={`mt-8 h-12 w-full text-lg font-semibold transition-all duration-500 ease-out bg-primary text-primary-foreground shadow-sm
+                                hover:bg-zinc-700 hover:shadow-md active:scale-[0.98]
+                                ${updating ? "cursor-wait opacity-90" : "cursor-pointer"} 
+                                disabled:opacity-70`}
+                        >
+                            {updating ? (
+                                <>
+                                    <Loader2 className="mr-2 h-5 w-5 animate-spin" /> 
+                                    <span>Guardando...</span>
+                                </>
+                            ) : (
+                                <span>Guardar cambios</span>
+                            )}
                         </Button>
                     </div>
                 </form>
