@@ -6,6 +6,20 @@ import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { supabase } from "../../database/supabase/client";
 import { toast } from "sonner";
 
+
+// Importacion del "modal" recuperar contraseña
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "../ui/dialog";
+import { DialogClose } from "@radix-ui/react-dialog";
+
+
 export default function LoginForm() {
     const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(false);
@@ -13,6 +27,9 @@ export default function LoginForm() {
     const [formData, setFormData] = useState({ email: "", password: "" });
 
     const isFormInvalid = !formData.email.includes('@') || formData.password.length < 8;
+
+    const [errorMsg, setErrorMsg] = useState<string | null>(null);
+    const [isSuccess, setIsSuccess] = useState(false);
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
@@ -47,6 +64,41 @@ export default function LoginForm() {
             setIsLoading(false);
         }
     };
+
+    const handleForgotPassword = async () => {
+    // 1. Limpiamos estados anteriores
+    setErrorMsg(null);
+    setIsSuccess(false);
+
+    // 2. Validación: que el email no esté vacío
+    if (!formData.email.trim()) {
+        setErrorMsg("Por favor, introduce tu correo electrónico.");
+        return;
+    }
+
+    setIsLoading(true);
+
+    try {
+        // 3. Llamada a Supabase para resetear contraseña
+        const { error } = await supabase.auth.resetPasswordForEmail(formData.email.trim(), {
+            redirectTo: `${window.location.origin}/reset-password`,
+        });
+
+        if (error) {
+            // Si Supabase devuelve error (ej: email no válido)
+            setErrorMsg("No se ha podido verificar el estado de tu cuenta.");
+            return;
+        }
+
+        // 4. Éxito: Mostramos la alerta verde
+        setIsSuccess(true);
+        
+    } catch (err) {
+        setErrorMsg("Error de conexión. Inténtalo de nuevo.");
+    } finally {
+        setIsLoading(false);
+    }
+};
 
     return (
         <div className="min-h-screen bg-background pt-20 pb-32 px-4">
@@ -104,9 +156,94 @@ export default function LoginForm() {
                     
                     {/* Olvidaste tu contraseña */}
                     <div className="text-right">
-                    <Link to="/forgot-password"  className="text-sm font-semibold text-primary hover:underline">
-                        ¿Has olvidado tu contraseña?
-                    </Link>
+                    <Dialog>
+                        <DialogTrigger asChild>
+                        <button type="button" className="text-sm font-semibold text-primary hover:underline cursor-pointer bg-transparent">
+                            ¿Has olvidado tu contraseña?
+                        </button>
+                        </DialogTrigger>
+                        
+                        {/* Cuerpo del Modal */}
+                        <DialogContent className="p-0 overflow-hidden sm:max-w-105 rounded-3xl border-border bg-card text-card-foreground">
+                            
+                            <button className="opacity-0 absolute w-0 h-0 pointer-events-none" />
+                            <div className="p-10 pb-6">
+                                <DialogHeader className="space-y-3">
+                                <DialogTitle className="text-2xl font-bold text-left">Recuperar contraseña</DialogTitle>
+                                <DialogDescription className="text-left text-muted-foreground">
+                                    Introduce tu correo electrónico y te enviaremos un enlace para restablecer tu contraseña.
+                                </DialogDescription>
+                                </DialogHeader>
+
+                                <div className="py-6 space-y-4">
+                                <div className="space-y-4 text-left">
+                                    <label className="text-sm font-medium text-foreground ml-1">
+                                    Correo electrónico <span className="text-red-500">*</span>
+                                    </label>
+
+                                    <Input type="email" placeholder="tucorreo@gmail.com" value={formData.email}
+                                        onChange={(e) => {
+                                        setFormData({...formData, email: e.target.value});
+                                        
+                                        if(errorMsg) setErrorMsg(null);
+                                        if(isSuccess) setIsSuccess(false);
+                                    }}
+                                    className="h-12 text-lg px-4 rounded-xl border-zinc-300 focus:ring-2 bg-background" 
+                                    />
+                                </div>
+
+                                {/* ALERTAS */}
+                                    {errorMsg && (
+                                    <div className="flex items-center gap-3 p-3 rounded-xl border border-red-200 bg-red-50 text-red-600 animate-in fade-in slide-in-from-top-1">
+                                        <div className="flex-shrink-0 w-5 h-5 rounded-full border border-red-600 flex items-center justify-center text-[10px] font-bold">
+                                        !
+                                        </div>
+                                        <span className="text-sm font-semibold">{errorMsg}</span>
+                                    </div>
+                                    )}
+
+                                    {isSuccess && (
+                                    <div className="flex items-center gap-3 p-3 rounded-xl border border-emerald-200 bg-emerald-50 text-emerald-600 animate-in fade-in slide-in-from-top-1">
+                                        <div className="flex-shrink-0 w-5 h-5 rounded-full border border-emerald-600 flex items-center justify-center">
+                                        <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={4}>
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                                        </svg>
+                                        </div>
+                                        <span className="text-sm font-semibold">Enlace enviado correctamente</span>
+                                    </div>
+                                    )}
+                                
+                                </div>
+                            </div>
+
+                            {/* Footer */}
+                            <DialogFooter className="flex flex-col items-center gap-2 p-6 bg-zinc-50/80 border-t border-zinc-200 sm:flex-col">
+                                <Button 
+                                type="button" 
+                                onClick={handleForgotPassword}
+                                disabled={isLoading}
+                                className="h-10 w-[85%] text-sm font-semibold cursor-pointer bg-primary text-primary-foreground hover:bg-zinc-700 transition-all duration-300 rounded-lg shadow-sm"
+                                >
+                                {isLoading ? "Enviando..." : "Enviar correo"}
+                                </Button>
+
+                                <DialogClose asChild>
+                                <Button 
+                                    type="button" 
+                                    variant="ghost" 
+                                    onClick={() => {
+                                        
+                                        setErrorMsg(null);
+                                        setIsSuccess(false);
+                                    }}
+                                    className="h-10 w-[85%] text-sm font-semibold cursor-pointer text-muted-foreground hover:text-foreground transition-all duration-300 rounded-lg"
+                                >
+                                    Cancelar
+                                </Button>
+                                </DialogClose>
+                            </DialogFooter>
+                            </DialogContent>
+                    </Dialog>
                     </div>
                 </div>
                 </div>
