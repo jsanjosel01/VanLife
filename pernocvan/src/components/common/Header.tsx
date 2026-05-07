@@ -31,26 +31,26 @@ export const Header = () => {
   };
 
   return (
-    <header className="sticky top-0 z-50 bg-background border-b border-border">
-      <div className="flex justify-between items-center p-4">
-        
-        <div className="logo-section">
-          
-          <Link to="/" className="flex items-center py-2 gap-2 hover:opacity-80 transition-opacity">
-            <img 
-              src="img/logo.png" 
-              alt="Pernocvan Logo" 
-              className="h-16 w-16 object-contain" 
-            />
-            <h2 className="text-2xl font-bold text-primary">Pervan</h2>
-          </Link>
-        </div>
+  <header className="sticky top-0 z-50 bg-background border-b border-border">
+    
+    <div className="flex justify-between items-center py-4 px-6">
+      
+      <div className="logo-section">
+        <Link to="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
+          <img 
+            src="img/logovan.png" 
+            alt="VanLife Logo" 
+            className="h-16 w-auto object-contain" 
+          />
+          <h3 className="text-2xl font-bold text-primary">VanLife</h3>
+        </Link>
+      </div>
 
-        {/* SECCIÓN DERECHA: TODO JUNTO */}
-      <div className="flex items-center gap-1 sm:gap-2">
+      {/* SECCIÓN DERECHA: TODO JUNTO */}
+      <div className="flex items-center gap-2 sm:gap-4">
         
-        {/* BLOQUE DE HERRAMIENTAS (Mapa + Idioma + Tema) */}
-        <div className="flex items-center">
+        {/* BLOQUE DE HERRAMIENTAS */}
+        <div className="flex items-center gap-1">
 
           {/* Botón Mapa*/}
           <Button 
