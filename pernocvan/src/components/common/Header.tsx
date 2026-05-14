@@ -5,7 +5,7 @@ import { Button } from '../ui/button';
 import { supabase } from '../../database/supabase/client';
 import type { Session } from '@supabase/supabase-js';
 
-import { Map, Globe, Sun, Moon} from 'lucide-react';
+import { Map, Globe, Sun, Moon, Truck} from 'lucide-react';
 
 export const Header = () => {
   const [session, setSession] = useState<Session | null>(null);
@@ -37,10 +37,16 @@ export const Header = () => {
       
       <div className="logo-section">
         <Link to="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
-          <img 
+          {/* <img 
             src="img/logovan.png" 
             alt="VanLife Logo" 
             className="h-16 w-auto object-contain" 
+          /> */}
+
+          {/* ICONO */}
+          <Truck 
+            className="w-7 h-7 text-primary" 
+            strokeWidth={2.5} 
           />
           <h3 className="text-2xl font-bold text-primary">VanLife</h3>
         </Link>

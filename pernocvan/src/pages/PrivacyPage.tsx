@@ -32,9 +32,7 @@ export const PrivacyPage = () => {
         </div>
 
         <div className="mt-12 pt-8 border-t border-border flex justify-between items-center">
-          <Link to="/signup" className="text-sm font-bold text-primary hover:underline">
-            ← Volver al Registro
-          </Link>
+          
           <p className="text-[10px] text-muted-foreground uppercase font-black">VanLife 2026©</p>
         </div>
       </div>

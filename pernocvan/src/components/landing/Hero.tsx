@@ -66,7 +66,9 @@ export const Hero = () => {
 
       <div className="relative z-10 w-full max-w-4xl px-6 text-center">
         <h1 className="text-5xl md:text-7xl font-black text-white mb-6 tracking-tighter shadow-sm">
-          TU VIAJE EMPIEZA <span className="text-zinc-950 py-1 rounded-2xl mx-1 inline-block shadow-xl">AQUÍ</span>
+          TU VIAJE EMPIEZA <span className="text-zinc-950 bg-zinc-100/90 py-1 px-4 rounded-2xl mx-1 inline-block shadow-xl border border-zinc-300">
+            AQUÍ
+            </span>
         </h1>
         <p className="text-xl text-zinc-200 mb-10 max-w-2xl mx-auto font-medium">
           Encuentra el rincón perfecto para pernoctar hoy mismo.

@@ -10,6 +10,12 @@ import { useAuthStore } from '../store/useAuthStore';
 import { useSearchParams } from 'react-router-dom';
 import { MapIcon, Minus, Plus, Satellite } from 'lucide-react';
 
+// Función para capitalizar cada palabra (Ej: "LISBOA, PORTUGAL" -> "Lisboa, Portugal")
+const capitalizar = (str: string) => {
+  if (!str) return "";
+  return str.toLowerCase().replace(/\b\w/g, (l) => l.toUpperCase());
+};
+
 delete (L.Icon.Default.prototype as any)._getIconUrl;
 
 L.Icon.Default.mergeOptions({
@@ -78,6 +84,10 @@ const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
 
   // Estado para el modo de mapa (calle o satélite)
   const [modoMapa, setModoMapa] = useState<'calle' | 'satelite'>('calle');
+
+  const [sugerencias, setSugerencias] = useState<any[]>([]);
+  const [mostrarListaSugerencias, setMostrarListaSugerencias] = useState(false);
+
   
 
   // 1) Obtener ubicación GPS del usuario al entrar
@@ -147,6 +157,28 @@ const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   useEffect(() => {
     fetchComentarios();
   }, []);
+
+  useEffect(() => {
+  const buscarSugerencias = async () => {
+    if (textoBusqueda.length < 3) {
+      setSugerencias([]);
+      return;
+    }
+    try {
+      const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(textoBusqueda)}&limit=5`);
+      const data = await res.json();
+      setSugerencias(data);
+    } catch (e) {
+      console.error("Error buscando sugerencias", e);
+    }
+  };
+
+  
+
+  const timeoutId = setTimeout(buscarSugerencias, 300); // Esperamos un poco para no saturar la API
+  return () => clearTimeout(timeoutId);
+}, [textoBusqueda]);
+
 
 
   // Función para cargar los comentarios
@@ -358,7 +390,8 @@ const handleComentar = () => {
           <input 
             type="text" placeholder="¿A dónde vamos?" 
             className="flex-1 outline-none text-base bg-transparent font-medium" 
-            value={textoBusqueda} onChange={(e) => setTextoBusqueda(e.target.value)} 
+            value={textoBusqueda} 
+            onChange={(e) => setTextoBusqueda(capitalizar(e.target.value))}
           />
           <button type="submit" className="text-zinc-400">🔍</button>
         </form>
@@ -434,6 +467,7 @@ const handleComentar = () => {
                 }}
                 className="text-left bg-white p-4 rounded-xl border border-zinc-200 hover:border-zinc-400 transition-all shadow-sm w-full group"
               >
+                <p className="font-bold text-sm">{capitalizar(p.nombre)} </p>
                 <p className="font-bold text-sm text-zinc-900 group-hover:text-[#e03b4b] transition-colors">
                   {p.nombre}
                 </p>
@@ -535,8 +569,8 @@ const handleComentar = () => {
               <div className="space-y-4">
                 {/* Título Principal con Corazón de Favorito */}
                 <div className="flex items-center justify-between gap-4 mb-1">
-                  <h2 className="text-2xl font-black text-zinc-950 leading-tight">
-                    {selectedPoint.nombre}
+                  <h2 className="text-2xl font-black text-zinc-950">
+                    {capitalizar(selectedPoint.nombre)}
                   </h2>
                   <button className="text-zinc-300 hover:text-[#e03b4b] transition-colors shrink-0 text-2xl">
                     ♥
@@ -551,14 +585,15 @@ const handleComentar = () => {
 
                 <div className="space-y-6">
                   {/* Ubicación Estilizada */}
+
+                      {selectedPoint.direccion && 
+
                   <div className="flex items-start gap-3">
                     <div className="w-8 h-8 rounded-full bg-zinc-50 flex items-center justify-center shrink-0 border border-zinc-100">
                       <span className="text-xs">📍</span>
                     </div>
-                    <p className="text-sm text-zinc-600 font-bold leading-snug">
-                      {selectedPoint.direccion || "Dirección no disponible en el mapa"}
-                    </p>
                   </div>
+                  }
 
                   {/* Enlaces dinámicos: Solo aparecen si hay información */}
                   {(selectedPoint.web || selectedPoint.telefono) && (
