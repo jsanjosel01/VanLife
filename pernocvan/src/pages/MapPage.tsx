@@ -11,8 +11,6 @@ import { useSearchParams, useNavigate  } from 'react-router-dom';
 import { LocateFixed, MapIcon, MapPin, Minus, Plus, Satellite, Search, Settings2, X } from 'lucide-react';
 
 
-
-
 // Función para capitalizar 
 const capitalizar = (str: string) => {
   if (!str) return "";
@@ -132,6 +130,9 @@ const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const [mostrarSugDestino, setMostrarSugDestino] = useState(false);
 
   const [rutaPintada, setRutaPintada] = useState(false);
+
+  // FAVORITOS
+  const [listaFavoritosIds, setListaFavoritosIds] = useState<string[]>([]);
 
 
   // Sincronización de sesión (Rutas y Comentarios dependen de esto)
@@ -629,18 +630,110 @@ useEffect(() => {
     }
   };
 
+// Esperamos un poco para no saturar la API con cada letra que el usuario escribe
   const delayDebounce = setTimeout(buscarCiudadesRuta, 300);
   return () => clearTimeout(delayDebounce);
 }, [origen, destino, mostrarSugOrigen, mostrarSugDestino]);
 
 
 
+// FAVORITOS 
+useEffect(() => {
+  const cargarFavoritosIds = async () => {
+    if (!isAuthenticated) {
+      setListaFavoritosIds([]);
+      return;
+    }
+    
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+
+    const { data, error } = await supabase
+      .from('sitios_favoritos')
+      .select('sitio_id')
+      .eq('user_id', user.id);
+
+    if (data && !error) {
+      setListaFavoritosIds(data.map(f => f.sitio_id.toString()));
+    }
+  };
+
+  cargarFavoritosIds();
+}, [isAuthenticated, selectedPoint]);
+
+// Función para alternar el favorito (Añadir/Quitar)
+const toggleFavorito = async (sitio: any) => {
+  if (!isAuthenticated) {
+    mostrarNotificacion("Inicia sesión para guardar tus sitios favoritos.");
+    return;
+  }
+
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return;
+
+  const idString = sitio.id.toString();
+  const esFavorito = listaFavoritosIds.includes(idString);
+
+  if (esFavorito) {
+    // Si ya es favorito, lo borramos
+    const { error } = await supabase
+      .from('sitios_favoritos')
+      .delete()
+      .eq('user_id', user.id)
+      .eq('sitio_id', idString);
+
+    if (!error) {
+      setListaFavoritosIds(prev => prev.filter(id => id !== idString));
+      mostrarNotificacion("Sitio eliminado de tus favoritos.");
+    }
+  } else {
+    // Si no es favorito, lo guardamos con todos sus datos básicos
+    const { error } = await supabase
+      .from('sitios_favoritos')
+      .insert({
+        user_id: user.id,
+        sitio_id: idString,
+        nombre: sitio.nombre || "Lugar sin nombre",
+        tipo: sitio.tipo,
+        lat: sitio.lat,
+        lon: sitio.lon,
+        direccion: sitio.direccion || null
+      });
+
+    if (!error) {
+      setListaFavoritosIds(prev => [...prev, idString]);
+      mostrarNotificacion("¡Guardado en tus favoritos!");
+    } else {
+      console.error(error);
+    }
+  }
+};
+
+
+// Quitar el SCROLL DE LA WEB 
+  useEffect(() => {
+    // Guardamos cómo estaba el scroll original
+    const overflowOriginal = document.body.style.overflow;
+    const heightOriginal = document.body.style.height;
+
+    // Forzamos a que la web mida exactamente el monitor y bloquee el scroll
+    document.body.style.overflow = 'hidden';
+    document.body.style.height = '100vh';
+
+    // Limpieza: Cuando el usuario se vaya a otra página (Home, Login...), le devolvemos el scroll normal
+    return () => {
+      document.body.style.overflow = overflowOriginal;
+      document.body.style.height = heightOriginal;
+    };
+  }, []);
+
+
 
   return (
-    <div className="relative h-screen w-full bg-zinc-100 overflow-hidden font-sans">
+    <div className="relative h-screen w-full bg-zinc-100 overflow-hidden font-sans select-none">
       
     {/* BUSCADOR + BOTÓN AFINAR */}
-    <div className="fixed top-40 left-10 z-[50] flex flex-col gap-3 w-[340px] pointer-events-auto">
+    <div className="fixed top-40 left-10 z-[50] flex flex-col gap-3 w-[340px] pointer-events-auto max-h-[calc(100vh-180px)] overflow-hidden">
     
       <div className="relative">
         <form 
@@ -836,11 +929,11 @@ useEffect(() => {
         <button 
           onClick={() => {
             setMostrarPanelRuta(!mostrarPanelRuta);
-            setMostrarFiltros(false); // Auto-cierre de filtros al abrir ruta
+            setMostrarFiltros(false); 
           }} 
-          className="bg-white rounded-full px-6 py-4 flex items-center justify-between shadow-lg text-zinc-800 font-bold hover:bg-zinc-50 transition-all cursor-pointer"
+          className="bg-white rounded-full px-6 py-4 flex items-center justify-between shadow-lg text-zinc-800 font-bold hover:bg-zinc-50 transition-all w-full cursor-pointer"
         >
-          <span>Planificar un viaje</span>
+          <span className="text-sm tracking-tight">Planificar un viaje</span>
           <MapIcon size={18} className="text-[#e03b4b]" />
         </button>
 
@@ -1018,7 +1111,7 @@ useEffect(() => {
 
       {/* LISTA DE RESULTADOS (Solo aparece si hay puntos) */}
       {puntos.length > 0 && (
-        <div className="relative flex-1 overflow-y-auto mt-4 border-t border-zinc-100 pt-4 max-h-[50vh] bg-zinc-50 rounded-b-3xl p-4">
+        <div className="flex-1 overflow-y-auto mt-2 bg-white rounded-[24px] p-4 border border-zinc-100 shadow-xl custom-scrollbar min-h-0">
 
           <div className="flex flex-col gap-3">
             {puntos.map((p) => (
@@ -1144,26 +1237,37 @@ useEffect(() => {
               </div>
 
               <div className="space-y-4">
-                {/* Título Principal con Corazón de Favorito */}
+
+                {/* Corazón de Favorito */}
                 <div className="flex items-center justify-between gap-4 mb-1">
-                  <h2 className="text-2xl font-black text-zinc-950">
+                  <h2 className="text-2xl font-black text-zinc-950 truncate">
                     {capitalizar(selectedPoint.nombre)}
                   </h2>
-                  <button className="text-zinc-300 hover:text-[#e03b4b] transition-colors shrink-0 text-2xl">
+                  <button 
+                    type="button"
+                    onClick={() => toggleFavorito(selectedPoint)}
+
+                    //  Si está en la lista de favoritos, se vuelve rojo, si no, se queda gris
+                    className={`transition-all shrink-0 text-2xl cursor-pointer active:scale-125 duration-150 ${
+                      listaFavoritosIds.includes(selectedPoint.id.toString())
+                        ? 'text-[#e03b4b] scale-110' 
+                        : 'text-zinc-300 hover:text-[#e03b4b]/60'
+                    }`}
+                  >
                     ♥
                   </button>
                 </div>
 
                 <div className="space-y-6">
                   {/* Ubicación Estilizada */}
-                      {selectedPoint.direccion && 
+                      {/* {selectedPoint.direccion && 
 
                   <div className="flex items-start gap-3">
                     <div className="w-8 h-8 rounded-full bg-zinc-50 flex items-center justify-center shrink-0 border border-zinc-100">
                       <span className="text-xs">📍</span>
                     </div>
                   </div>
-                  }
+                  } */}
 
                   {/* Coordenadas */}
                   <div className="bg-zinc-50 p-4 rounded-2xl border border-zinc-100">
