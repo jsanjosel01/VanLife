@@ -1,9 +1,8 @@
-
 import { supabase } from "@/database/supabase/client";
 import { RefreshCw, Search, Trash2, Save, X, MapPin, Truck, Info } from "lucide-react";
 import { useEffect, useState } from "react";
-import { Area, AreaChart, Bar, BarChart, CartesianGrid, Cell, Pie, PieChart, PolarAngleAxis, PolarGrid, Radar, RadarChart, XAxis, YAxis } from "recharts";
-import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
+import { Area, AreaChart, CartesianGrid,  XAxis } from "recharts";
+import { type ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 
 
 import { toast } from "sonner";
@@ -26,11 +25,7 @@ export const AdminPage = () => {
 
   useEffect(() => { cargarUsuarios(); }, []);
 
-  // ========================================================
-  // LÓGICA DE PROCESAMIENTO DE DATOS PARA LAS GRÁFICAS
-  // ========================================================
-
-  // 1. Agrupar y contar modelos de furgonetas (Top 5)
+  // Agrupar y contar modelos de furgonetas
   const datosFurgonetas = Object.entries(
     usuarios.reduce((acc: Record<string, number>, u) => {
       const van = u.van_model?.trim() || "No especificado";
@@ -42,7 +37,7 @@ export const AdminPage = () => {
     .sort((a, b) => b.viajeros - a.viajeros)
     .slice(0, 5);
 
-  // 2. Agrupar y contar ubicaciones (Top 5)
+  //  Agrupar y contar ubicaciones 
   const datosUbicaciones = Object.entries(
     usuarios.reduce((acc: Record<string, number>, u) => {
       const ciudad = u.address?.trim() || "No especificada";
@@ -54,7 +49,7 @@ export const AdminPage = () => {
     .sort((a, b) => b.viajeros - a.viajeros)
     .slice(0, 5);
 
-  // 3. Configuración de colores de las gráficas de Shadcn
+  // Configuración de colores de las gráficas de Shadcn
   const chartConfig = {
     viajeros: {
       label: "Viajeros",
@@ -62,10 +57,7 @@ export const AdminPage = () => {
     },
   } satisfies ChartConfig;
 
-  // ========================================================
-  // OPERACIONES CRUD DE USUARIOS (SUPABASE)
-  // ========================================================
-
+  // Función para crear o actualizar un usuario
   const gestionarGuardado = async () => {
     if (!usuarioSeleccionado?.username) {
       return toast.error("El nombre de usuario es obligatorio");

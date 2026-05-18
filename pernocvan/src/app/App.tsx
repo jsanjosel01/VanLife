@@ -10,6 +10,7 @@ import ResetPassword from '@/pages/ResetPassword';
 import { AdminPage } from '@/pages/AdminPage';
 import { TermsPage } from '@/pages/TermsPage';
 import { PrivacyPage } from '@/pages/PrivacyPage';
+import { DashboardPage } from '@/pages/DashboardPage';
 
 
 function App() {
@@ -29,6 +30,8 @@ function App() {
 
         <Route path="/terms" element={<TermsPage />} />
         <Route path="/privacy" element={<PrivacyPage />} />
+
+        <Route path="/admin/dashboard" element={<DashboardPage />} />
         
       </Routes>
     </AppLayout>
