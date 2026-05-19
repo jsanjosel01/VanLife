@@ -9,28 +9,44 @@ import { Map, Globe, Sun, Moon, Truck, LayoutDashboard, Info, Users} from 'lucid
 
 export const Header = () => {
   const [session, setSession] = useState<Session | null>(null);
-  const [isAdmin, setIsAdmin] = useState<boolean>(true); 
+  const [isAdmin, setIsAdmin] = useState<boolean>(false); 
   const navigate = useNavigate();
   
-  const verificarRolAdmin = (currentSession: Session | null) => {
-    setIsAdmin(true);
+  // Funcion para verificar el rol
+  const verificarRolAdmin = async (currentSession: Session | null) => {
+    if (!currentSession) {
+      setIsAdmin(false);
+      return;
+    }
+    
+    setIsAdmin(true); 
   };
 
   useEffect(() => {
-    // Comprobar si ya hay una sesión al cargar la página
+    // Comprobar la sesión inicial al cargar la página
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       verificarRolAdmin(session);
     });
 
-    // Escuchar cambios de autenticación (Login/Logout)
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-      verificarRolAdmin(session);
+    // Escuchar cambios de autenticación con control de eventos específicos
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, currentSession) => {
+
+      //  Si el evento es de recuperación de contraseña, bloqueamos los privilegios de Admin
+      if (event === 'PASSWORD_RECOVERY') {
+        setSession(null); // Oculta las opciones de usuario logueado
+        setIsAdmin(false); // Oculta los iconos de administración
+        return;
+      }
+
+      // Para el resto de estados normales (Login, Logout, etc.)
+      setSession(currentSession);
+      verificarRolAdmin(currentSession);
     });
 
     return () => subscription.unsubscribe();
   }, []);
+
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
@@ -51,13 +67,12 @@ export const Header = () => {
           </Link>
         </div>
 
-        {/* SECCIÓN DERECHA: TODO JUNTO */}
+        {/* SECCIÓN DERECHA: COMPONENTES */}
         <div className="flex items-center gap-2 sm:gap-4">
           
-          {/* BLOQUE DE HERRAMIENTAS */}
+          {/* BLOQUE DE HERRAMIENTAS GENERALES */}
           <div className="flex items-center gap-1">
-
-            {/* Botón Mapa*/}
+            {/* Botón Mapa */}
             <Button 
               variant="ghost" 
               asChild 
@@ -69,7 +84,7 @@ export const Header = () => {
               </Link>
             </Button>
 
-            {/* Botón Idiomas*/}
+            {/* Botón Idiomas */}
             <Button 
               variant="ghost" 
               className="cursor-pointer gap-2 text-muted-foreground hover:text-foreground transition-colors h-9 px-3"
@@ -79,7 +94,7 @@ export const Header = () => {
               <span className="text-sm font-medium hidden sm:inline">ES</span>
             </Button>
 
-            {/* Botón DARK/LIGHT*/}
+            {/* Botón DARK/LIGHT */}
             <Button 
               variant="ghost" 
               size="icon" 
@@ -89,50 +104,48 @@ export const Header = () => {
               <Sun className="h-4 w-4 dark:hidden" />
               <Moon className="h-4 w-4 hidden dark:block" />
             </Button>
+          </div>
 
-
-          {/* LÍNEA DIVISORIA FIJA */}
-          <div className="h-5 w-[1px] bg-border mx-2 self-center opacity-80" />
-
-
-          {/* BOTÓN DEL DASHBOARD  */}
-          {isAdmin && (
-            <Button 
-              variant="ghost" 
-              asChild 
-              className="cursor-pointer gap-2 text-[#e03b4b] hover:text-red-700 font-bold transition-colors h-9 px-3 bg-red-500/5 hover:bg-red-500/10 rounded-full animate-in fade-in duration-200"
-              title="Ir al Dashboard"
-            >
-              <Link to="/admin/dashboard" className="flex items-center gap-2">
-                <LayoutDashboard className="h-4 w-4" />
-                {/* <span className="text-sm font-bold">Dashboard</span> */}
-              </Link>
-            </Button>
-          )}
-
-          {/* BOTÓN GESTIÓN DE USUARIOS */}
-          {isAdmin && (
-            <Button 
-              variant="ghost" 
-              asChild 
-              className="cursor-pointer gap-2 text-[#e03b4b] hover:text-red-700 font-bold transition-colors h-9 px-3 bg-red-500/5 hover:bg-red-500/10 rounded-full animate-in fade-in duration-200"
-              title="Gestión de la Comunidad"
-            >
-              <Link to="/admin" className="flex items-center gap-2">
-                <Users className="h-4 w-4" />
-                {/* <span className="text-xs font-black uppercase tracking-wider">Comunidad</span> */}
-              </Link>
-            </Button>
-          )}
-
+          {/* CONTROL DE FLUJO POR SESIÓN */}
           {session ? (
             <>
+              {/* LÍNEA DIVISORIA */}
+              <div className="h-5 w-[1px] bg-border mx-2 self-center opacity-80" />
+
+              {/* BOTÓN DEL DASHBOARD */}
+              {isAdmin && (
+                <Button 
+                  variant="ghost" 
+                  asChild 
+                  className="cursor-pointer gap-2 text-[#e03b4b] hover:text-red-700 font-bold transition-colors h-9 px-3 bg-red-500/5 hover:bg-red-500/10 rounded-full animate-in fade-in duration-200"
+                  title="Ir al Dashboard"
+                >
+                  <Link to="/admin/dashboard" className="flex items-center gap-2">
+                    <LayoutDashboard className="h-4 w-4" />
+                  </Link>
+                </Button>
+              )}
+
+              {/* BOTÓN GESTIÓN DE USUARIOS */}
+              {isAdmin && (
+                <Button 
+                  variant="ghost" 
+                  asChild 
+                  className="cursor-pointer gap-2 text-[#e03b4b] hover:text-red-700 font-bold transition-colors h-9 px-3 bg-red-500/5 hover:bg-red-500/10 rounded-full animate-in fade-in duration-200"
+                  title="Gestión de la Comunidad"
+                >
+                  <Link to="/admin" className="flex items-center gap-2">
+                    <Users className="h-4 w-4" />
+                  </Link>
+                </Button>
+              )}
+
               {/* Botón de Perfil */}
               <Button variant="outline" className="cursor-pointer border-border text-foreground h-9 px-4 transition-all duration-300 ease-in-out hover:bg-accent hover:border-foreground/30 hover:shadow-sm">
                 <Link to="/profile">Mi Perfil</Link>
               </Button>
 
-              {/* El botón cerrar sesión */}
+              {/* Botón cerrar sesión */}
               <Button variant="destructive" onClick={handleLogout} 
                 className="cursor-pointer h-9 px-4 transition-all duration-300 hover:opacity-90 hover:shadow-md active:scale-95"
               >
@@ -141,6 +154,9 @@ export const Header = () => {
             </>
           ) : (
             <>
+              {/* LÍNEA DIVISORIA */}
+              <div className="h-5 w-[1px] bg-border mx-2 self-center opacity-80" />
+
               {/* Botón de Iniciar Sesión */}
               <Button 
                 variant="outline" 
@@ -159,8 +175,8 @@ export const Header = () => {
               </Button>
             </>
           )}
+
         </div>
-      </div>
       </div>
     </header>
   );
