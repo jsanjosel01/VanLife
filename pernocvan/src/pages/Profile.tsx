@@ -4,30 +4,24 @@ import { Input } from "../components/ui/input";
 import { Button } from "../components/ui/button";
 import { toast } from "sonner";
 import { AvatarUploader } from "../components/avatar/AvatarUploader";
-import { Loader2} from "lucide-react";
-
+import { ArrowRight, Edit2, Fuel, Heart, Loader2, MapPin, Route, Navigation, X, Save, Trash2, Truck, Info, Tent, Trees, ShowerHead, Droplets, Toilet, Wifi, Utensils, PawPrint, Zap, HeartPulse, User} from "lucide-react";
+import { JSX } from "react/jsx-runtime";
 
 export default function Profile() {
-    const [profile, setProfile] = useState({
-        username: "",
-        full_name: "",
-        address: "",
-        avatar_url: "",
-        favorite_places: "",
-        rol: "",
-        van_model: "",
-        bio: "",
-    });
-
-
-    const [formData, setFormData] = useState({ ...profile });
-    const [email, setEmail] = useState("");
-    const [userId, setUserId] = useState<string | undefined>(undefined);
+    const [profile, setProfile] = useState<any>(null);
+    const [formData, setFormData] = useState<any>({});
+    const [editando, setEditando] = useState(false); // Modo lectura/edición
     const [loading, setLoading] = useState(true);
     const [updating, setUpdating] = useState(false);
+    
+    // Estados para secciones dinámicas
+    const [favoritos, setFavoritos] = useState<any[]>([]);
+    const [rutas, setRutas] = useState<any[]>([]);
+    const [email, setEmail] = useState("");
+    const [userId, setUserId] = useState<string | undefined>(undefined);
     const [memberSince, setMemberSince] = useState("");
 
-    async function fetchProfile() {
+    async function fetchAllData() {
         setLoading(true);
         const { data: { user } } = await supabase.auth.getUser();
         if (!user) return;
@@ -36,39 +30,28 @@ export default function Profile() {
         setEmail(user.email || "");
 
         if (user.created_at) {
-            const date = new Date(user.created_at);
-            setMemberSince(date.toLocaleDateString('es-ES'));
+            setMemberSince(new Date(user.created_at).toLocaleDateString('es-ES'));
         }
 
-        const { data, error } = await supabase
-        .from("perfiles") 
-        .select("*")
-        .eq("id", user.id)
-        .maybeSingle();
+        // Cargar Perfil
+        const { data: pData } = await supabase.from("perfiles").select("*").eq("id", user.id).maybeSingle();
+        if (pData) {
+            setProfile(pData);
+            setFormData(pData);
+        }
 
-        if (error) console.error("Error conexión:", error.message);
-        console.log("Datos recuperados:", data);
+        // Cargar Sitios Favoritos
+        const { data: favs } = await supabase.from("sitios_favoritos").select("*").eq("user_id", user.id).order("created_at", { ascending: false });
+        if (favs) setFavoritos(favs);
 
-                if (data) {
-                    const loadedData = {
-                        username: data.username || "",
-                        full_name: data.full_name || "",
-                        address: data.address || "",
-                        avatar_url: data.avatar_url || "",
-                        favorite_places: data.favorite_places || "",
-                        rol: data.rol || "",
-                        van_model: data.van_model || "",
-                        bio: data.bio || ""
-                    };
-                    setProfile(loadedData);
-                    setFormData(loadedData);
-                }
-                setLoading(false);
-            }
+        // Cargar Rutas
+        const { data: rData } = await supabase.from("rutas_guardadas").select("*").eq("user_id", user.id).order("created_at", { ascending: false });
+        if (rData) setRutas(rData);
 
-    useEffect(() => {
-        fetchProfile();
-    }, []);
+        setLoading(false);
+    }
+
+    useEffect(() => { fetchAllData(); }, []);
 
     const handleUpdate = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -76,138 +59,244 @@ export default function Profile() {
         const { data: { user } } = await supabase.auth.getUser();
         if (!user) return;
 
-        const { error } = await supabase
-            .from("perfiles")
-            .update({ 
-                username: formData.username,
-                full_name: formData.full_name,
-                address: formData.address,
-                avatar_url: formData.avatar_url,
-                favorite_places: formData.favorite_places,
-                van_model: formData.van_model,
-                bio: formData.bio
-            })
-            .eq("id", user.id);
-
-        if (error) {
-            toast.error("Error al actualizar: " + error.message);
-        } else {
+        const { error } = await supabase.from("perfiles").update(formData).eq("id", user.id);
+        
+        if (error) toast.error("Error al guardar: " + error.message);
+        else {
             toast.success("Perfil actualizado");
             setProfile(formData);
+            setEditando(false);
         }
         setUpdating(false);
     };
+
+    const eliminarFavorito = async (id: number) => {
+        const { error } = await supabase.from("sitios_favoritos").delete().eq("id", id);
+        if (!error) {
+            toast.success("Sitio eliminado");
+            setFavoritos(favoritos.filter(f => f.id !== id));
+        }
+    };
+
+    const eliminarRuta = async (id: number) => {
+        const { error } = await supabase.from("rutas_guardadas").delete().eq("id", id);
+        if (!error) {
+            toast.success("Ruta eliminada");
+            setRutas(rutas.filter(r => r.id !== id));
+        }
+    };
+
+    const renderIconoTipo = (id: string) => {
+    // Definimos el mapeo de iconos
+    const iconos: Record<string, JSX.Element> = {
+        area_ac: <Truck className="h-5 w-5" />,
+        camping: <Tent className="h-5 w-5" />,
+        parking: <MapPin className="h-5 w-5" />,
+        gasolinera: <Fuel className="h-5 w-5" />,
+        spot: <Trees className="h-5 w-5" />,
+        servicio_agua: <Droplets className="h-5 w-5" />,
+        servicio_ducha: <ShowerHead className="h-5 w-5" />,
+        servicio_wc: <Toilet className="h-5 w-5" />,
+        servicio_wifi: <Wifi className="h-5 w-5" />,
+        servicio_picnic: <Utensils className="h-5 w-5" />,
+        servicio_basura: <Trash2 className="h-5 w-5" />,
+        servicio_mascotas: <PawPrint className="h-5 w-5" />,
+        servicio_salud: <HeartPulse className="h-5 w-5" />,
+        servicio_carga: <Zap className="h-5 w-5" />,
+    };
+
+    return iconos[id as keyof typeof iconos] || <Navigation className="h-5 w-5" />;
+};
 
     if (loading) return <div className="p-8 text-center min-h-screen flex items-center justify-center">Cargando perfil...</div>;
 
     return (
         <div className="flex justify-center bg-background pt-10 pb-40 px-4">
-            <div className="max-w-2xl mx-auto">
-                <form onSubmit={handleUpdate} className="w-full rounded-2xl border border-border bg-card p-10 shadow-sm space-y-8 animate-in fade-in duration-500" >
-
+            <div className="max-w-3xl mx-auto w-full space-y-8">
+            
+                {/* FORMULARIO */}
+                <form onSubmit={handleUpdate} className="bg-card p-10 rounded-2xl border shadow-sm space-y-8 animate-in fade-in duration-500">
                     {/* CABECERA */}
-                    <div className="flex items-center justify-between pb-8 mb-4 border-b border-border">
-                        <div className="space-y-3"> 
-                            <span className="inline-flex items-center px-3 py-0.5 rounded-full text-xs font-semibold bg-primary/10 text-primary uppercase tracking-wide">
-                                {profile.rol || "Usuario"}
+                    <div className="flex justify-between items-start pb-8">
+                        
+                        {/* Parte izquierda */}
+                        <div className="space-y-4">
+                            <div>
+                                <h3 className="text-3xl font-bold tracking-tight text-foreground">
+                                    {profile.username || "Viajero"}
+                                </h3>
+
+                                {memberSince && <p className="text-sm text-muted-foreground pt-1">Miembro desde {memberSince}</p>}
+                            </div>
+
+                            {/* Botón Editar Perfil */}
+                            <Button 
+                                type="button" 
+                                variant="outline" 
+                                size="sm" 
+                                onClick={() => setEditando(!editando)}
+                                className="cursor-pointer transition-transform hover:scale-105 active:scale-95"
+                            >
+                                {editando ? "Cancelar" : "Editar perfil"}
+                            </Button>
+                        </div>
+
+                        {/* Avatar */}
+                        <div className="flex flex-col items-center gap-2">
+                            <AvatarUploader 
+                                uid={userId} 
+                                url={formData.avatar_url} 
+                                onUpload={(url) => setFormData({ ...formData, avatar_url: url })} 
+                            />
+                            <span className="text-[8px] text-muted-foreground uppercase font-bold tracking-wider text-center max-w-[100px]">
+                                Haz clic para editar
                             </span>
-                            
-                            <h2 className="text-3xl font-bold tracking-tight text-foreground">
-                                {profile.username || "Sin nombre"}
-                            </h2>
-                            
-                            {memberSince && (
-                                <p className="text-sm text-muted-foreground">
-                                    Miembro desde <span className="font-medium">{memberSince}</span>
+                        </div>
+                    </div>
+        
+                    {/* CAMPOS DE DATOS */}
+                    <div className="space-y-8">
+                        <div className="flex items-center gap-2 mb-6 border-b pb-4">
+                            <User className="h-6 w-6 text-primary" />
+                        <h3 className="text-xl font-bold">Datos personales </h3>
+                    </div>
+
+                        {/* USUARIO */}
+                        <div className="space-y-2">
+                            <label className="text-xs font-bold text-muted-foreground flex items-center gap-2"> Usuario</label>
+                            {editando ? (
+                                <Input value={formData.username} onChange={(e) => setFormData({...formData, username: e.target.value})} />
+                            ) : (
+                                <p className="p-3 bg-secondary rounded-lg border border-transparent">{profile.username || "No definido"}</p>
+                            )}
+                        </div>
+                        
+                        {/* NOMBRE */}
+                        <div className="space-y-2">
+                            <label className="text-xs font-bold text-muted-foreground flex items-center gap-2"> Nombre completo</label>
+                            {editando ? (
+                                <Input value={formData.full_name || ""} onChange={(e) => setFormData({...formData, full_name: e.target.value})} />
+                            ) : (
+                                <p className="p-3 bg-secondary rounded-lg">{profile?.full_name || "No definido"}</p>
+                            )}
+                        </div>
+
+                        {/* DIRECCIÓN */}
+                        <div className="space-y-2">
+                            <label className="text-xs font-bold text-muted-foreground flex items-center gap-2">
+                                <MapPin className="h-4 w-4" /> Dirección
+                            </label>
+                            {editando ? (
+                                <Input 
+                                    value={formData.address || ""} 
+                                    onChange={(e) => setFormData({...formData, address: e.target.value})} 
+                                />
+                            ) : (
+                                <p className="p-3 bg-secondary rounded-lg font-medium">
+                                    {profile?.address || "No especificada"}
                                 </p>
                             )}
                         </div>
 
-                        {/* AVATAR */}
-                        <AvatarUploader
-                            uid={userId}
-                            url={formData.avatar_url}
-                            onUpload={(url) => setFormData({ ...formData, avatar_url: url })}
-                        />
-                    </div>
-
-                    {/* CAMPOS DE DATOS */}
-                    <div className="space-y-6">
-                        <div className="max-w-xs"> 
-                            <label className="text-sm font-medium text-gray-600 flex items-center gap-1">
-                                Correo Electrónico 🔒
+                        {/* MODELO CAMPER */}
+                        <div className="space-y-2">
+                            <label className="text-xs font-bold text-muted-foreground flex items-center gap-2">
+                                <Truck className="h-4 w-4" /> Modelo
                             </label>
-                            <Input disabled value={email} className="bg-gray-100 mt-1 cursor-not-allowed" />
-                            <p className="text-[12px] text-gray-400 mt-1">Bloqueado por seguridad.</p>
+                            {editando ? (
+                                <Input 
+                                    value={formData.van_model || ""} 
+                                    onChange={(e) => setFormData({...formData, van_model: e.target.value})} 
+                                />
+                            ) : (
+                                <p className="p-3 bg-secondary rounded-lg font-medium flex items-center gap-2">
+                                    {profile?.van_model || "Sin modelo"}
+                                </p>
+                            )}
                         </div>
 
-                        <div className="max-w-xs">
-                            <label className="text-sm font-medium text-gray-600">Nombre de usuario</label>
-                            <Input 
-                                value={formData.username} 
-                                onChange={(e) => setFormData({...formData, username: e.target.value})} 
-                                className="mt-1" 
-                            />
-                        </div>
-
-                        <div>
-                            <h3 className="text-lg font-bold text-gray-700 border-b pb-2 mb-4">Datos Personales</h3>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div>
-                                    <label className="text-sm font-medium text-gray-600">Nombre</label>
-                                    <Input value={formData.full_name} onChange={(e) => setFormData({...formData, full_name: e.target.value})} className="mt-1" />
-                                </div>
-                                <div>
-                                    <label className="text-sm font-medium text-gray-600">Dirección</label>
-                                    <Input value={formData.address} onChange={(e) => setFormData({...formData, address: e.target.value})} className="mt-1" placeholder="Ciudad, País" />
-                                </div>
-                            </div>
-                        </div>
-
-                        <div>
-                            <h3 className="text-lg font-bold text-gray-700 border-b pb-2 mb-4">Tu vida en furgo</h3>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div>
-                                    <label className="text-sm font-medium text-gray-600">Mi Camper</label>
-                                    <Input value={formData.van_model} onChange={(e) => setFormData({...formData, van_model: e.target.value})} className="mt-1" placeholder="Ej: VW California" />
-                                </div>
-                                <div>
-                                    <label className="text-sm font-medium text-gray-600">Lugares favoritos</label>
-                                    <Input value={formData.favorite_places} onChange={(e) => setFormData({...formData, favorite_places: e.target.value})} className="mt-1" placeholder="Ej: Pirineos, Costa Brava..." />
-                                </div>
-                            </div>
-                            <div className="mt-6">
-                                <label className="text-sm font-medium text-gray-600">Biografía</label>
+                        {/* BIOGRAFÍA */}
+                        <div className="col-span-full space-y-2">
+                            <label className="text-xs font-bold text-muted-foreground flex items-center gap-2">
+                                <Info className="h-4 w-4" /> Biografía
+                            </label>
+                            {editando ? (
                                 <textarea 
-                                    value={formData.bio} 
+                                    value={formData.bio || ""} 
                                     onChange={(e) => setFormData({...formData, bio: e.target.value})} 
-                                    className="w-full mt-1 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 outline-none"
-                                    rows={3}
+                                    className="w-full p-3 bg-background border rounded-lg min-h-[100px] focus:ring-2 focus:ring-primary/20 outline-none"
                                     placeholder="Cuéntanos un poco sobre ti y tus viajes..."
                                 />
-                            </div>
+                            ) : (
+                                <p className="p-3 bg-secondary rounded-lg min-h-[100px] text-gray-800">
+                                    {profile?.bio || "Sin biografía."}
+                                </p>
+                            )}
                         </div>
 
-                        <Button 
-                            type="submit" 
-                            disabled={updating}
-                            className={`mt-8 h-12 w-full text-lg font-semibold transition-all duration-500 ease-out bg-primary text-primary-foreground shadow-sm
-                                hover:bg-zinc-700 hover:shadow-md active:scale-[0.98]
-                                ${updating ? "cursor-wait opacity-90" : "cursor-pointer"} 
-                                disabled:opacity-70`}
+                    </div>
+
+                    {/* Boton de guardar los cambios */}
+                    {editando && (
+                        <Button type="submit" disabled={updating} size="lg" 
+                            className="w-full h-14 text-lg font-bold cursor-pointer transition-transform hover:scale-[1.02] active:scale-[0.98] mt-4"
                         >
                             {updating ? (
-                                <>
-                                    <Loader2 className="mr-2 h-5 w-5 animate-spin" /> 
-                                    <span>Guardando...</span>
-                                </>
+                                <Loader2 className="animate-spin w-5 h-5" />
                             ) : (
-                                <span>Guardar cambios</span>
+                                "Guardar cambios"
                             )}
                         </Button>
-                    </div>
+                    )}
+
                 </form>
+
+                {/* MIS SITIOS FAVORITOS */}
+                <div className="bg-card p-8 rounded-2xl border shadow-sm">
+                    <div className="flex items-center gap-2 mb-6 border-b pb-4">
+                        <Heart className="h-6 w-6 text-red-500" />
+                        <h3 className="text-xl font-bold">Mis sitios favoritos</h3>
+                    </div>
+                    {favoritos.length === 0 ? <p className="text-muted-foreground italic">Aún no has guardado sitios.</p> : (
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            {favoritos.map((f) => (
+                                <div key={f.id} className="p-4 border rounded-xl flex items-center justify-between hover:bg-secondary/50 transition-all">
+                                    <div className="flex items-center gap-3">
+                                        {renderIconoTipo(f.tipo)}
+                                        <span className="font-semibold">{f.nombre}</span>
+                                    </div>
+                                    <button onClick={() => eliminarFavorito(f.id)} className="text-muted-foreground hover:text-red-500"><Trash2 className="h-4 w-4 cursor-pointer" /></button>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
+
+                {/* MIS RUTAS */}
+                <div className="bg-card p-8 rounded-2xl border shadow-sm">
+                    <div className="flex items-center gap-2 mb-6 border-b pb-4">
+                        <Route className="h-6 w-6 text-primary" />
+                        <h3 className="text-xl font-bold">Mis rutas</h3>
+                    </div>
+                    {rutas.length === 0 ? <p className="text-muted-foreground italic">No tienes rutas guardadas.</p> : (
+                        <div className="space-y-3">
+                            {rutas.map((r) => (
+                                <div key={r.id} className="p-4 border rounded-xl flex justify-between items-center hover:bg-secondary/50 transition-all">
+                                    <div className="flex items-center gap-3 font-semibold">
+                                        {r.origen} <ArrowRight className="h-4 w-4 text-muted-foreground" /> {r.destino}
+                                    </div>
+                                    <button onClick={() => eliminarRuta(r.id)} className="text-muted-foreground hover:text-red-500"><Trash2 className="h-4 w-4 cursor-pointer" /></button>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
             </div>
         </div>
     );
 }
+
+
+
+
+
