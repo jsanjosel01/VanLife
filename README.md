@@ -1,7 +1,6 @@
 # 🚐 **VANLIFE**
-### *Autonomía total en ruta: Localizador de servicios para tu estilo de vida camper*
+### Autonomía total en ruta: Localizador de servicios para tu estilo de vida camper
 
----
 
 ## 🌍 **Descripción General**
 **VANLIFE** es una aplicación web desarrollada para el ciclo de **Desarrollo de Aplicaciones Web (DAW)**. 
@@ -15,8 +14,6 @@ Su objetivo es simplifica la vida sobre ruedas proporcionando un mapa interactiv
 * 🔹 **Búsqueda de puntos críticos** Localización en tiempo real de gasolineras, parkings, puntos de carga eléctrica, suministro de agua potable y zonas de gestión de residuos.
 * 🔹 **Planificación** Filtrado avanzado por tipo de servicio y necesidades específicas según el vehículo.
 * 🔹 **Ecosistema de datos** Integración con OpenStreetMap (vía Overpass API) para ofrecer información actualizada y fiable en cualquier lugar del mapa.
-
----
 
 ## 📍 **¿Qué puedes encontrar en VanLife?**
 ## Funcionalidades: Mapa de Servicios Camper
@@ -49,7 +46,7 @@ Nuestra aplicación permite filtrar servicios específicos para facilitar la aut
 * 🔹 **FRONTEND:** React + Vite + TailwindCSS
 * 🔹 **BASE DE DATOS Y AUTENTICACIÓN:** Supabase (PostgreSQL + Auth + Storage)
 * 🔹 **DISEÑO:** Limpio, responsive y con componentes reutilizables.
-* 🔹 **OBJETIVO:** Localización y gestioón inteligente de servicios esenciales para el viajero. 
+* 🔹 **OBJETIVO:** Localización y gestión inteligente de servicios esenciales para el viajero. 
 * 🔹 **MAPAS Y DATOS**: Leaflet y OpenStreetMap (Overpass API) para geolocalización.
 * 🔹 **ESTADO Y LÓGICA**: Zustand para gestión global y i18next para internacionalización.
 
@@ -91,10 +88,10 @@ Nuestra aplicación permite filtrar servicios específicos para facilitar la aut
 - 📱 **UI/UX:** Diseño totalmente *responsive* con Tailwind CSS, Shadcn UI.
 - 🔐 **Seguridad:** Autenticación con Supabase y políticas RLS para protección de datos.
 - 🛡️ **Roles:** Sistema de permisos diferenciados para Invitados, Usuarios y Administradores.
-- 📍 **Mapas:** Integración de Leaflet para la visualización de puntos de pernocta en tiempo real.
--  Filtrado inteligente de puntos de interés (Pernocta, Gasolineras, Puntos de Agua, Parkings).
+- 📍 **Mapas:** Integración de Leaflet para la visualización de puntos en tiempo real.
 -  ⚙️ **Gestión de Perfil**: Personalización según el tipo de vehículo para adaptar las rutas o recomendaciones.
--  🌍 **I18n** (Internacionalización): Adaptado a varios idiomas.
+-  🌍 **I18n** Internacionalización: Adaptado a varios idiomas.
+  
 ---
 
 ## 👨🏼‍🏫 **Tutorías**
@@ -111,21 +108,14 @@ Nuestra aplicación permite filtrar servicios específicos para facilitar la aut
 * **29-ABRIL** | 🏗️ Arquitectura: Diseño de base de datos en Supabase y configuración del entorno de desarrollo (Vite + Tailwind + Shadcn)
 *              
 
----
-
 #### **MAYO: DISEÑO Y ESTRUCTURA**
-* **13-MAYO** | 🔐 Core del sistema: Implementación de Autenticación (Login/Registro/JWT) y protección de rutas.
-*             | 🗺️ Funcionalidad principal: Integración de Mapas (Leaflet) con OpenStreetMap y lógica de filtrado de servicios.
-       
+* **13-MAYO** | 🔐 Core del sistema: Implementación de Autenticación (Login/Registro/JWT), integración de Mapas (Leaflet) y lógica de filtrado de servicios.
 * **27-MAYO** | 🚀 Finalización: Pruebas de integración, despliegue en producción (Vercel) y revisión de documentación.
-*             
-
----
 
 #### **JUNIO: FINALIZACIÓN Y PRESENTACIÓN
-01-JUNIO | ✅ Presentación final del TFG ante el tribunal.
-
+* **01-JUNIO** | ✅ Presentación final del TFG ante el tribunal. 
 ---
+
 
 ## 👤 **Autoría del proyecto**
 
