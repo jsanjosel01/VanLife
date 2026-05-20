@@ -1,15 +1,15 @@
-# 🚐 **PERNOCVAN**
+# 🚐 **VANLIFE**
 ### *Planificación de rutas y pernoctar para la comunidad camper*
 
-🚐 PernocVan
+🚐 VanLife
 Proyecto Final de Ciclo: Desarrollo de Aplicaciones Web (DAW)
 
-PernocVan es una aplicación web diseñada para la comunidad camper. Su objetivo principal es facilitar la planificación de rutas, el descubrimiento de lugares seguros para pernoctar y fomentar el intercambio de experiencias entre usuarios que comparten la pasión por la vida sobre ruedas.
+VanLife es una aplicación web diseñada para la comunidad camper. Su objetivo principal es facilitar la planificación de rutas, el descubrimiento de lugares seguros para pernoctar y fomentar el intercambio de experiencias entre usuarios que comparten la pasión por la vida sobre ruedas.
 
 ---
 
 ## 🌍 **Descripción General**
-**PERNOCVAN** es una aplicación web desarrollada para el ciclo de **Desarrollo de Aplicaciones Web**. Permite a cada usuario/a facilitar la planificación de rutas, el descubrimiento de nuevos lugares donde dormir y el intercambio de información entre usuarios.
+**VANLIFE** es una aplicación web desarrollada para el ciclo de **Desarrollo de Aplicaciones Web**. Permite a cada usuario/a facilitar la planificación de rutas, el descubrimiento de nuevos lugares donde dormir y el intercambio de información entre usuarios.
 
 ---
 
@@ -23,18 +23,19 @@ PernocVan es una aplicación web diseñada para la comunidad camper. Su objetivo
 
 ## 👥 **Matriz de Roles y Permisos**
 * 👤 **Invitado**	Acceso de solo lectura: Visualizar landing page, explorar mapa público y registrarse.
-* 🚐 **Registrado**	Acceso Total: Crear rutas, añadir lugares de pernocta, subir fotos, comentar y favoritos.
-* 🛡️ **Admin**	Gestión: Moderar comentarios, eliminar contenido inapropiado y gestionar usuarios.
+* 🚐 **Registrado**	Acceso Total: Crear rutas, añadir lugares a favoritos.
+* 🛡️ **Admin**	Gestión: Gestión de usuarios, moderar e eliminar contenido inapropiado.
 
 ---
 ### 🗄️ **Estructura de Base de Datos (Supabase)**
 
 | Tabla | Descripción |
 | :--- | :--- |
-| **`profiles`** | Datos del usuario (nombre, avatar, tipo de vehículo, etc.) |
-| **`places`** | Información de los puntos de pernocta (coordenadas, servicios, fotos) |
-| **`reviews`** | Comentarios y valoraciones de la comunidad |
-| **`favorites`** | Relación de lugares guardados por cada usuario |
+| **`perfiles`** | Datos del usuario (nombre, avatar, tipo de vehículo, etc.) |
+| **`sitios`** | Información de los puntos de pernocta (coordenadas, servicios, fotos) |
+| **`rutas_guardadas`** | Comentarios y valoraciones de la comunidad |
+| **`favoritos`** | Relación de lugares guardados por cada usuario |
+| **`sitios_favoritos`** | Relación de lugares guardados por cada usuario |
 
 ---
 
