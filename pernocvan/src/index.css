@@ -5,32 +5,46 @@
 
 @custom-variant dark (&:is(.dark *));
 
-
 @layer base {
+  :root {
+    color-scheme: light;
+  }
+  .dark {
+    color-scheme: dark;
+  }
+
   body {
     @apply bg-background text-foreground;
   }
+  
   * {
     @apply border-border outline-ring/50;
   }
+  
   html {
     @apply font-sans;
   }
+
+  /* REGLA ÚNICA Y CLARA PARA INPUTS */
+  input, textarea, select {
+    @apply text-foreground bg-background;
+  }
+
+  /* Forzar ocultación iconos contraseña */
+  input::-ms-reveal, input::-ms-clear { display: none !important; }
+  input[type="password"]::-webkit-credentials-auto-fill-button { 
+    visibility: hidden !important; display: none !important; 
+  }
 }
 
-/* Ocultar icono del ojo por defecto en navegadores (Edge/Chrome) */
-input::-ms-reveal, 
-input::-ms-clear { 
-    display: none !important; 
-}
-
-/* Forzar ocultación en Webkit */
-input[type="password"]::-webkit-credentials-auto-fill-button {
-    visibility: hidden !important;
-    display: none !important;
-    pointer-events: none;
-    position: absolute;
-    right: 0;
+/* Corregir autocompletado de Chrome */
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-text-fill-color: hsl(var(--foreground)) !important;
+  -webkit-box-shadow: 0 0 0px 1000px hsl(var(--background)) inset !important;
+  transition: background-color 5000s ease-in-out 0s;
 }
 
 @theme inline {
@@ -74,14 +88,6 @@ input[type="password"]::-webkit-credentials-auto-fill-button {
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
-
-
-  /* FOOTER 
-  --color-neutral-950: #1d1c1c;
-  --color-neutral-800: #27272a;
-  --color-neutral-400: #a1a1aa;
-  --color-neutral-300: #d4d4d8;*/
-
 }
 
 :root {
@@ -151,53 +157,4 @@ input[type="password"]::-webkit-credentials-auto-fill-button {
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
-}
-
-
-/* Forzar DARK/LIGHT */
-input, textarea, select {
-  color: hsl(var(--foreground)) !important;
-}
-
-.dark input {
-  color-scheme: dark;
-}
-
-input:-webkit-autofill,
-input:-webkit-autofill:hover, 
-input:-webkit-autofill:focus {
-  -webkit-text-fill-color: hsl(var(--foreground)) !important;
-  -webkit-box-shadow: 0 0 0px 1000px hsl(var(--background)) inset !important;
-}
-
-input:-webkit-autofill,
-input:-webkit-autofill:hover,
-input:-webkit-autofill:focus,
-input:-webkit-autofill:active {
-  -webkit-text-fill-color: hsl(var(--foreground)) !important;
-  -webkit-box-shadow: 0 0 0px 1000px hsl(var(--background)) inset !important;
-  transition: background-color 5000s ease-in-out 0s;
-}
-
-input {
-  color: hsl(var(--foreground)) !important;
-}
-
-
-@layer base {
-  input, 
-  textarea, 
-  select {
-    color: hsl(var(--foreground)) !important;
-    background-color: hsl(var(--background)) !important;
-  }
-}
-
-input:-webkit-autofill,
-input:-webkit-autofill:hover,
-input:-webkit-autofill:focus,
-input:-webkit-autofill:active {
-  -webkit-text-fill-color: hsl(var(--foreground)) !important;
-  -webkit-box-shadow: 0 0 0px 1000px hsl(var(--background)) inset !important;
-  transition: background-color 5000s ease-in-out 0s;
 }

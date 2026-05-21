@@ -135,7 +135,8 @@ export default function Profile() {
                                 variant="outline" 
                                 size="sm" 
                                 onClick={() => setEditando(!editando)}
-                                className="cursor-pointer transition-transform hover:scale-105 active:scale-95"
+                                // Añadimos clases para forzar el color de texto y borde en modo oscuro
+                                className="cursor-pointer transition-transform hover:scale-105 active:scale-95 text-foreground border-border hover:bg-accent"
                             >
                                 {editando ? "Cancelar" : "Editar perfil"}
                             </Button>
@@ -158,16 +159,16 @@ export default function Profile() {
                     <div className="space-y-8">
                         <div className="flex items-center gap-2 mb-6 border-b pb-4">
                             <User className="h-6 w-6 text-primary" />
-                        <h3 className="text-xl font-bold">Datos personales </h3>
-                    </div>
+                            <h3 className="text-xl font-bold text-foreground">Datos personales </h3>
+                        </div>
 
                         {/* USUARIO */}
                         <div className="space-y-2">
                             <label className="text-xs font-bold text-muted-foreground flex items-center gap-2"> Usuario</label>
                             {editando ? (
-                                <Input value={formData.username} onChange={(e) => setFormData({...formData, username: e.target.value})} />
+                                <Input className="text-foreground" value={formData.username} onChange={(e) => setFormData({...formData, username: e.target.value})} />
                             ) : (
-                                <p className="p-3 bg-secondary rounded-lg border border-transparent">{profile.username || "No definido"}</p>
+                                <p className="p-3 bg-secondary rounded-lg border border-transparent text-foreground">{profile.username || "No definido"}</p>
                             )}
                         </div>
                         
@@ -175,9 +176,9 @@ export default function Profile() {
                         <div className="space-y-2">
                             <label className="text-xs font-bold text-muted-foreground flex items-center gap-2"> Nombre completo</label>
                             {editando ? (
-                                <Input value={formData.full_name || ""} onChange={(e) => setFormData({...formData, full_name: e.target.value})} />
+                                <Input className="text-foreground" value={formData.full_name || ""} onChange={(e) => setFormData({...formData, full_name: e.target.value})} />
                             ) : (
-                                <p className="p-3 bg-secondary rounded-lg">{profile?.full_name || "No definido"}</p>
+                                <p className="p-3 bg-secondary rounded-lg text-foreground">{profile?.full_name || "No definido"}</p>
                             )}
                         </div>
 
@@ -188,11 +189,12 @@ export default function Profile() {
                             </label>
                             {editando ? (
                                 <Input 
+                                    className="text-foreground"
                                     value={formData.address || ""} 
                                     onChange={(e) => setFormData({...formData, address: e.target.value})} 
                                 />
                             ) : (
-                                <p className="p-3 bg-secondary rounded-lg font-medium">
+                                <p className="p-3 bg-secondary rounded-lg font-medium text-foreground">
                                     {profile?.address || "No especificada"}
                                 </p>
                             )}
@@ -205,11 +207,12 @@ export default function Profile() {
                             </label>
                             {editando ? (
                                 <Input 
+                                    className="text-foreground"
                                     value={formData.van_model || ""} 
                                     onChange={(e) => setFormData({...formData, van_model: e.target.value})} 
                                 />
                             ) : (
-                                <p className="p-3 bg-secondary rounded-lg font-medium flex items-center gap-2">
+                                <p className="p-3 bg-secondary rounded-lg font-medium text-foreground">
                                     {profile?.van_model || "Sin modelo"}
                                 </p>
                             )}
@@ -224,16 +227,15 @@ export default function Profile() {
                                 <textarea 
                                     value={formData.bio || ""} 
                                     onChange={(e) => setFormData({...formData, bio: e.target.value})} 
-                                    className="w-full p-3 bg-background border rounded-lg min-h-[100px] focus:ring-2 focus:ring-primary/20 outline-none"
+                                    className="w-full p-3 bg-background border rounded-lg min-h-[100px] text-foreground focus:ring-2 focus:ring-primary/20 outline-none"
                                     placeholder="Cuéntanos un poco sobre ti y tus viajes..."
                                 />
                             ) : (
-                                <p className="p-3 bg-secondary rounded-lg min-h-[100px] text-gray-800">
+                                <p className="p-3 bg-secondary rounded-lg min-h-[100px] text-foreground">
                                     {profile?.bio || "Sin biografía."}
                                 </p>
                             )}
                         </div>
-
                     </div>
 
                     {/* Boton de guardar los cambios */}
@@ -250,13 +252,15 @@ export default function Profile() {
                     )}
 
                 </form>
+
                 {/* MIS SITIOS FAVORITOS */}
-                        <div className="bg-card p-8 rounded-2xl border border-border shadow-sm">
-                            <div className="flex items-center gap-2 mb-6 border-b border-border pb-4">
-                                <Heart className="h-6 w-6 text-red-500" />
-                                <h3 className="text-xl font-bold">Mis sitios favoritos</h3>
-                            </div>
-                            {favoritos.length === 0 ? <p className="text-muted-foreground italic">Aún no has guardado sitios.</p> : (
+                    <div className="bg-card p-8 rounded-2xl border border-border shadow-sm">
+                        <div className="flex items-center gap-2 mb-6 border-b border-border pb-4">
+                            <Heart className="h-6 w-6 text-red-500" />
+                            {/* HE AÑADIDO text-foreground AQUÍ ABAJO */}
+                            <h3 className="text-xl font-bold text-foreground">Mis sitios favoritos</h3>
+                        </div>
+                        {favoritos.length === 0 ? <p className="text-muted-foreground italic">Aún no has guardado sitios.</p> : (
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     {favoritos.map((f) => (
                                         <div key={f.id}
@@ -285,8 +289,10 @@ export default function Profile() {
                 <div className="bg-card p-8 rounded-2xl border border-border shadow-sm">
                     <div className="flex items-center gap-2 mb-6 border-b border-border pb-4">
                         <Route className="h-6 w-6 text-primary" />
-                        <h3 className="text-xl font-bold">Mis rutas</h3>
+                        {/* Aquí está el cambio */}
+                        <h3 className="text-xl font-bold text-foreground">Mis rutas</h3>
                     </div>
+                
                     {rutas.length === 0 ? <p className="text-muted-foreground italic">No tienes rutas guardadas.</p> : (
                         <div className="space-y-3">
                             {rutas.map((r) => (
