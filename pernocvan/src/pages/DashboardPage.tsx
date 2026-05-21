@@ -1,6 +1,6 @@
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { supabase } from "@/database/supabase/client";
-import { Activity, ArrowUpRight, TrendingUp, Users, Map } from "lucide-react";
+import { Activity, ArrowUpRight, TrendingUp, Users, Map, Filter } from "lucide-react";
 import { useEffect, useState } from "react";
 import {AreaChart, Area, CartesianGrid, XAxis, BarChart, Bar, YAxis, RadarChart, PolarRadiusAxis, Radar, PolarAngleAxis, PolarGrid } from "recharts";
 
@@ -141,7 +141,7 @@ export const DashboardPage = () => {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         
         {/* Tarjeta 1: Usuarios */}
-        <div className="rounded-3xl border border-muted bg-card p-6 shadow-sm flex flex-col gap-1">
+        <div className="rounded-3xl border border-muted bg-card p-6 shadow-sm flex flex-col gap-1 transition-all duration-300 hover:-translate-y-1 hover:shadow-md">
           <div className="flex items-center justify-between space-y-0 pb-2">
             <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Usuarios Totales</span>
             <Users className="h-4 w-4 text-muted-foreground" />
@@ -153,7 +153,7 @@ export const DashboardPage = () => {
         </div>
 
         {/* Tarjeta 2: Rutas */}
-        <div className="rounded-3xl border border-muted bg-card p-6 shadow-sm flex flex-col gap-1">
+        <div className="rounded-3xl border border-muted bg-card p-6 shadow-sm flex flex-col gap-1 transition-all duration-300 hover:-translate-y-1 hover:shadow-md">
           <div className="flex items-center justify-between space-y-0 pb-2">
             <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Rutas Creadas</span>
             <Map className="h-4 w-4 text-[#e03b4b]" />
@@ -165,35 +165,36 @@ export const DashboardPage = () => {
         </div>
 
         {/* Tarjeta 3: Actividad */}
-        <div className="rounded-3xl border border-muted bg-card p-6 shadow-sm flex flex-col gap-1">
+        <div className="rounded-3xl border border-muted bg-card p-6 shadow-sm flex flex-col gap-1 transition-all duration-300 hover:-translate-y-1 hover:shadow-md">
           <div className="flex items-center justify-between space-y-0 pb-2">
             <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Puntos de Interés</span>
             <Activity className="h-4 w-4 text-amber-500" />
           </div>
-          <div className="text-3xl font-black text-foreground">Overpass API</div>
+          <div className="text-2xl font-black text-foreground">Overpass API</div>
           <p className="text-[10px] text-emerald-600 font-bold flex items-center gap-1 mt-1">
-            🌐 Filtros Activos
+            <Filter className="w-3 h-3" />Filtros Activos
           </p>
         </div>
 
         {/* Tarjeta 4: Ratio de Crecimiento */}
-        <div className="rounded-3xl border border-muted bg-card p-6 shadow-sm flex flex-col gap-1">
+        <div className="rounded-3xl border border-muted bg-card p-6 shadow-sm flex flex-col gap-1 transition-all duration-300 hover:-translate-y-1 hover:shadow-md">
           <div className="flex items-center justify-between space-y-0 pb-2">
             <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Engagement</span>
             <ArrowUpRight className="h-4 w-4 text-muted-foreground" />
           </div>
-          <div className="text-3xl font-black text-foreground">98.2%</div>
+          <div className="text-2xl font-black text-foreground">98.2%</div>
           <p className="text-[10px] text-muted-foreground font-semibold mt-1">
             Usuarios activos con furgoneta registrada
           </p>
         </div>
       </div>
 
+
       {/* SECCIÓN DE GRÁFICAS REUBICADAS */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
         
         {/* Gráfica 1: Tipos de Furgonetas */}
-        <div className="bg-card border border-muted p-6 rounded-[32px] space-y-4 shadow-sm flex flex-col justify-between">
+        <div className="bg-card border border-muted p-6 rounded-[32px] space-y-4 shadow-sm flex flex-col justify-between transition-all duration-300 hover:-translate-y-1 hover:shadow-md">
           <div>
             <h4 className="font-black text-lg tracking-tight text-foreground">Ranking de Vehículos</h4>
             <p className="text-xs text-muted-foreground">Los modelos más populares de la comunidad</p>
@@ -230,9 +231,9 @@ export const DashboardPage = () => {
             })}
           </div>
         </div>
-
+        
         {/* Gráfica 2: Regiones de Origen */}
-        <div className="bg-card border border-muted p-6 rounded-[32px] space-y-4 shadow-sm flex flex-col justify-between">
+        <div className="bg-card border border-muted p-6 rounded-[32px] space-y-4 shadow-sm flex flex-col justify-between transition-all duration-300 hover:-translate-y-1 hover:shadow-md">
           <div>
             <h4 className="font-black text-lg tracking-tight text-foreground">Lugares de Origen</h4>
             <p className="text-xs text-muted-foreground">Ciudades y regiones con más viajeros activos</p>
@@ -267,7 +268,7 @@ export const DashboardPage = () => {
       </div>
 
       {/* GRÁFICA VISITANTES */}
-        <div className="col-span-1 md:col-span-2 rounded-xl border border-border bg-card p-6 shadow-sm mt-2">
+        <div className="col-span-1 md:col-span-2 rounded-xl border border-border bg-card p-6 shadow-sm mt-2 transition-all duration-300 hover:-translate-y-1 hover:shadow-md">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 pb-4">
             <div>
               <h4 className="font-bold text-lg tracking-tight text-foreground">Usuarios Registrados</h4>

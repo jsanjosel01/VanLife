@@ -72,6 +72,23 @@ export const AdminPage = () => {
     }
   };
 
+  // Modal no salga scroll
+  useEffect(() => {
+    if (usuarioSeleccionado) {
+      // Si el modal está abierto, bloqueamos el scroll de la página de fondo
+      document.body.style.overflow = 'hidden';
+    } else {
+      // Si se cierra, volvemos a permitir el scroll
+      document.body.style.overflow = 'unset';
+    }
+
+    // Limpieza por si el usuario cambia de página de golpe
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [usuarioSeleccionado]);
+
+
   // Estadísticas 
   const totalViajeros = usuarios.length;
   const conFurgoneta = usuarios.filter(u => u.van_model).length;
@@ -84,7 +101,7 @@ export const AdminPage = () => {
         {/* CABECERA */}
         <div className="flex items-center justify-between space-y-2">
           <div>
-            <h2 className="text-3xl font-black tracking-tight text-foreground">Control de la Comunidad</h2>
+            <h2 className="text-3xl font-black tracking-tight text-foreground">Control de la comunidad</h2>
             <p className="text-sm text-muted-foreground">
               Gestiona los perfiles viajeros y sus furgonetas
             </p>
@@ -97,27 +114,31 @@ export const AdminPage = () => {
 
         {/* TARJETAS DE CONTADORES */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <div className="bg-card border border-border p-4 rounded-2xl flex items-center gap-4 shadow-sm">
+          
+          <div className="bg-card border border-border p-4 rounded-2xl flex items-center gap-4 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md">
             <div className="p-3 bg-primary/10 rounded-xl text-primary"><Users className="h-5 w-5" /></div>
             <div>
               <p className="text-2xl font-black">{totalViajeros}</p>
-              <p className="text-xs text-muted-foreground font-semibold uppercase">Total Viajeros</p>
+              <p className="text-xs text-muted-foreground font-semibold">Total viajeros</p>
             </div>
           </div>
-          <div className="bg-card border border-border p-4 rounded-2xl flex items-center gap-4 shadow-sm">
+
+          <div className="bg-card border border-border p-4 rounded-2xl flex items-center gap-4 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md">
             <div className="p-3 bg-green-500/10 rounded-xl text-green-600"><Truck className="h-5 w-5" /></div>
             <div>
               <p className="text-2xl font-black">{conFurgoneta}</p>
-              <p className="text-xs text-muted-foreground font-semibold uppercase">Con Furgoneta</p>
+              <p className="text-xs text-muted-foreground font-semibold">Con furgoneta</p>
             </div>
           </div>
-          <div className="bg-card border border-border p-4 rounded-2xl flex items-center gap-4 shadow-sm">
+
+          <div className="bg-card border border-border p-4 rounded-2xl flex items-center gap-4 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md">
             <div className="p-3 bg-red-500/10 rounded-xl text-red-600"><Save className="h-5 w-5" /></div>
             <div>
               <p className="text-2xl font-black">{administradores}</p>
-              <p className="text-xs text-muted-foreground font-semibold uppercase">Admins</p>
+              <p className="text-xs text-muted-foreground font-semibold">Admins</p>
             </div>
           </div>
+          
         </div>
 
         {/* BUSCADOR */}
@@ -136,12 +157,13 @@ export const AdminPage = () => {
         <div className="w-full overflow-x-auto overflow-y-hidden rounded-2xl border border-border bg-card shadow-sm custom-scrollbar">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="border-b border-border bg-secondary/20 text-xs font-bold uppercase tracking-wider text-muted-foreground">
-                <th className="py-4 px-6">Viajero</th>
-                <th className="py-4 px-6 hidden sm:table-cell">Vehículo</th>
-                <th className="py-4 px-6 hidden md:table-cell">Ubicación</th>
-                <th className="py-4 px-6">Rol</th>
-                <th className="py-4 px-6 text-right">Acciones</th>
+              <tr className="border-b border-border bg-secondary/20 text-[10px] sm:text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                {/* Reducimos px-6 a px-3 en móvil, igual para el resto */}
+                <th className="py-3 px-3 sm:py-4 sm:px-6">Viajero</th>
+                <th className="py-3 px-3 sm:py-4 sm:px-6 hidden sm:table-cell">Vehículo</th>
+                <th className="py-3 px-3 sm:py-4 sm:px-6 hidden md:table-cell">Ubicación</th>
+                <th className="py-3 px-3 sm:py-4 sm:px-6 text-center sm:text-left">Rol</th>
+                <th className="py-3 px-3 sm:py-4 sm:px-6 text-right">Acciones</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border text-sm font-medium">
@@ -149,21 +171,23 @@ export const AdminPage = () => {
                 .filter(u => JSON.stringify(u).toLowerCase().includes(busqueda.toLowerCase()))
                 .map((u) => (
                   <tr key={u.id} className="hover:bg-secondary/10 transition-colors">
+                    
                     {/* Celda Perfil */}
-                    <td className="py-4 px-6 flex items-center gap-4">
+                    <td className="py-3 px-3 sm:py-4 sm:px-6 flex items-center gap-2 sm:gap-4">
+                      {/* Avatar un pelín más pequeño en móvil: h-8 w-8 */}
                       <img 
                         src={u.avatar_url || `https://ui-avatars.com/api/?name=${u.username}`} 
-                        className="h-10 w-10 rounded-xl object-cover shadow-sm border border-border" 
+                        className="h-8 w-8 sm:h-10 sm:w-10 rounded-xl object-cover shadow-sm border border-border shrink-0" 
                         alt=""
                       />
-                      <div className="flex flex-col">
-                        <span className="font-bold text-foreground text-base leading-tight">@{u.username}</span>
-                        <span className="text-xs text-muted-foreground">{u.full_name || 'Sin nombre completo'}</span>
+                      <div className="flex flex-col overflow-hidden">
+                        <span className="font-bold text-foreground text-sm sm:text-base leading-tight truncate max-w-[100px] sm:max-w-none">@{u.username}</span>
+                        <span className="text-[10px] sm:text-xs text-muted-foreground truncate max-w-[100px] sm:max-w-none">{u.full_name || 'Sin nombre'}</span>
                       </div>
                     </td>
 
                     {/* Celda Vehículo */}
-                    <td className="py-4 px-6 text-muted-foreground hidden sm:table-cell">
+                    <td className="py-3 px-3 sm:py-4 sm:px-6 text-muted-foreground hidden sm:table-cell">
                       {u.van_model ? (
                         <span className="flex items-center gap-1.5 font-semibold text-zinc-700">
                           <Truck className="h-4 w-4 opacity-70 text-primary" />
@@ -175,7 +199,7 @@ export const AdminPage = () => {
                     </td>
 
                     {/* Celda Ubicación */}
-                    <td className="py-4 px-6 text-muted-foreground hidden md:table-cell">
+                    <td className="py-3 px-3 sm:py-4 sm:px-6 text-muted-foreground hidden md:table-cell">
                       {u.address ? (
                         <span className="flex items-center gap-1.5">
                           <MapPin className="h-4 w-4 opacity-70 text-primary" />
@@ -187,17 +211,19 @@ export const AdminPage = () => {
                     </td>
 
                     {/* Celda Rol */}
-                    <td className="py-4 px-6">
-                      <span className={`text-[10px] font-black uppercase px-2.5 py-1 rounded-md tracking-wider ${u.rol === 'administrador' ? 'bg-red-500/10 text-red-600 border border-red-500/20' : 'bg-blue-500/10 text-blue-600 border border-blue-500/20'}`}>
-                        {u.rol}
+                    <td className="py-3 px-2 sm:px-6 text-center sm:text-left">
+                      {/* Badge más pequeño en móvil */}
+                      <span className={`text-[9px] sm:text-[10px] font-black uppercase px-1.5 sm:px-2.5 py-1 rounded-md tracking-wider ${u.rol === 'administrador' ? 'bg-red-500/10 text-red-600 border border-red-500/20' : 'bg-blue-500/10 text-blue-600 border border-blue-500/20'}`}>
+                        {u.rol === 'administrador' ? 'Admin' : 'User'}
                       </span>
                     </td>
 
                     {/* Celda Acción */}
-                    <td className="py-4 px-6 text-right">
+                    <td className="py-3 px-3 sm:py-4 sm:px-6 text-right">
+                      {/* Botón más compacto en móvil */}
                       <button 
                         onClick={() => { setUsuarioSeleccionado(u); setModoCrear(false); setEditando(false); }}
-                        className="bg-foreground text-background px-4 py-2 rounded-xl font-bold text-xs hover:bg-primary hover:text-white cursor-pointer transition-all active:scale-95 shadow-sm"
+                        className="bg-foreground text-background px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg sm:rounded-xl font-bold text-[10px] sm:text-xs hover:bg-primary hover:text-white cursor-pointer transition-all active:scale-95 shadow-sm"
                       >
                         Gestionar
                       </button>
@@ -211,45 +237,48 @@ export const AdminPage = () => {
         {/* Menu lateral (CREATE/READ/UPDATE/DELETE) */}  
         {usuarioSeleccionado && (
           <>
-            <div className="fixed inset-0 h-screen w-screen bg-background/60 backdrop-blur-sm z-40" onClick={() => { setUsuarioSeleccionado(null); setModoCrear(false); setEditando(false); }} />
+            <div className="fixed inset-0 h-[100dvh] w-screen bg-background/70 backdrop-blur-sm z-[9999]" 
+                onClick={() => { setUsuarioSeleccionado(null); setModoCrear(false); setEditando(false); }} 
+            />
 
-            <div className="fixed top-0 right-0 h-screen max-h-screen w-full max-w-sm bg-card border-l border-border shadow-2xl z-50 flex flex-col overflow-hidden animate-in slide-in-from-right duration-300">
+            <div className="fixed top-0 right-0 h-[100dvh] w-full sm:max-w-sm bg-card border-l border-border shadow-2xl z-[10000] flex flex-col animate-in slide-in-from-right duration-300">
                   
-              <div className="flex justify-end items-center p-2.5 pb-0">
-                <button onClick={() => { setUsuarioSeleccionado(null); setModoCrear(false); setEditando(false); }} className="p-1 hover:bg-muted rounded-full cursor-pointer transition-colors">
+              <div className="flex justify-end items-center p-3 pb-1">
+                <button onClick={() => { setUsuarioSeleccionado(null); setModoCrear(false); setEditando(false); }} className="p-1.5 hover:bg-muted rounded-full cursor-pointer transition-colors">
                     <X className="h-5 w-5" />
                 </button>
               </div>
 
-              <div className="flex-1 overflow-y-auto px-4 pb-4 custom-scrollbar text-foreground flex flex-col justify-between">
-                <header className="text-center space-y-2 py-2">
+              <div className="flex-1 overflow-y-auto px-5 pb-6 custom-scrollbar text-foreground flex flex-col">
+                
+                <header className="text-center space-y-2 py-2 shrink-0">
                   <img 
                     src={usuarioSeleccionado.avatar_url || `https://ui-avatars.com/api/?name=${usuarioSeleccionado.username}`} 
                     className="h-20 w-20 rounded-2xl mx-auto shadow-lg border-2 border-primary object-cover" 
-                    alt=""
+                    alt="Avatar de usuario"
                   />
                   <div>
                      <p className="text-xs text-primary font-mono">@{usuarioSeleccionado.username}</p>
                   </div>
                 </header>
 
-                <section className="flex flex-col gap-4">
+                <section className="flex flex-col gap-3 my-4 shrink-0">
                   {/* Nombre */}
-                  <div className={`p-4 rounded-xl border transition-all duration-200 ${(editando || modoCrear) ? 'bg-background border-primary shadow-sm ring-1 ring-primary/20' : 'bg-secondary/40 border-border/50'}`}>
+                  <div className={`p-3.5 rounded-xl border transition-all duration-200 ${(editando || modoCrear) ? 'bg-background border-primary shadow-sm ring-1 ring-primary/20' : 'bg-secondary/40 border-border/50'}`}>
                       <div className="flex items-center gap-2 text-[10px] font-bold text-primary/70 uppercase tracking-tight mb-1">
                           Nombre Completo
                       </div>
                       <input 
                           disabled={!editando && !modoCrear}
                           className="w-full bg-transparent text-sm font-semibold outline-none focus:text-primary disabled:cursor-default"
-                          placeholder="Ej: Julia Pérez..."
+                          placeholder="Ej: Carla Pérez..."
                           value={usuarioSeleccionado.full_name || ""}
                           onChange={(e) => setUsuarioSeleccionado({...usuarioSeleccionado, full_name: e.target.value})}
                       />
                   </div>
 
                   {/* Ubicación */}
-                  <div className={`p-4 rounded-xl border transition-all duration-200 ${editando ? 'bg-background border-primary shadow-sm ring-1 ring-primary/20' : 'bg-secondary/40 border-border/50'}`}>
+                  <div className={`p-3.5 rounded-xl border transition-all duration-200 ${editando ? 'bg-background border-primary shadow-sm ring-1 ring-primary/20' : 'bg-secondary/40 border-border/50'}`}>
                       <div className="flex items-center gap-2 text-[10px] font-bold text-primary/70 uppercase tracking-tight mb-1">
                           <MapPin className="h-3 w-3"/> Ubicación
                       </div>
@@ -263,7 +292,7 @@ export const AdminPage = () => {
                   </div>
 
                   {/* Vehículo */}
-                  <div className={`p-4 rounded-xl border transition-all duration-200 ${editando ? 'bg-background border-primary shadow-sm ring-1 ring-primary/20' : 'bg-secondary/40 border-border/50'}`}>
+                  <div className={`p-3.5 rounded-xl border transition-all duration-200 ${editando ? 'bg-background border-primary shadow-sm ring-1 ring-primary/20' : 'bg-secondary/40 border-border/50'}`}>
                       <div className="flex items-center gap-2 text-[10px] font-bold text-primary/70 uppercase tracking-tight mb-1">
                           <Truck className="h-3 w-3"/> Vehículo
                       </div>
@@ -277,13 +306,13 @@ export const AdminPage = () => {
                   </div>
 
                   {/* Biografía */}
-                  <div className={`p-4 rounded-xl border transition-all duration-200 ${editando ? 'bg-background border-primary shadow-sm ring-1 ring-primary/20' : 'bg-secondary/40 border-border/50'}`}>
+                  <div className={`p-3.5 rounded-xl border transition-all duration-200 ${editando ? 'bg-background border-primary shadow-sm ring-1 ring-primary/20' : 'bg-secondary/40 border-border/50'}`}>
                       <div className="flex items-center gap-2 text-[10px] font-bold text-primary/70 uppercase tracking-tight mb-1">
                           <Info className="h-3 w-3"/> Biografía
                       </div>
                       <textarea 
                           disabled={!editando}
-                          className="w-full bg-transparent text-sm font-semibold outline-none focus:text-primary resize-none h-24 disabled:cursor-default placeholder:italic custom-scrollbar"
+                          className="w-full bg-transparent text-sm font-semibold outline-none focus:text-primary resize-none h-20 disabled:cursor-default placeholder:italic custom-scrollbar"
                           placeholder="Cuéntanos algo sobre este viajero..."
                           value={usuarioSeleccionado.bio || ""}
                           onChange={(e) => setUsuarioSeleccionado({...usuarioSeleccionado, bio: e.target.value})}
@@ -291,32 +320,33 @@ export const AdminPage = () => {
                   </div>
                 </section>
 
-                <footer className="pt-4 space-y-2">
+                <footer className="mt-auto pt-2 space-y-3 shrink-0">
                   {!editando ? (
-                    <button onClick={() => setEditando(true)} className="w-full py-2.5 bg-primary text-primary-foreground rounded-xl text-sm font-bold hover:opacity-90 cursor-pointer">
+                    <button onClick={() => setEditando(true)} className="w-full py-3 bg-primary text-primary-foreground rounded-xl text-sm font-bold hover:opacity-90 cursor-pointer shadow-sm">
                       Editar Perfil
                     </button>
                   ) : (
-                    <div className="grid grid-cols-2 gap-2">
+                    <div className="grid grid-cols-2 gap-3">
                       <button 
                         onClick={gestionarGuardado} 
                         disabled={loading}
-                        className="py-2.5 bg-green-600 text-white rounded-xl text-sm font-bold flex items-center justify-center gap-2 active:scale-95 cursor-pointer transition-all shadow-lg shadow-green-900/20 disabled:opacity-50"
+                        className="py-3 bg-green-600 text-white rounded-xl text-sm font-bold flex items-center justify-center gap-2 active:scale-95 cursor-pointer transition-all shadow-md shadow-green-900/20 disabled:opacity-50"
                       >
                         <Save className="h-4 w-4"/> Guardar
                       </button>
                       <button 
                         onClick={() => { setEditando(false); setModoCrear(false); }} 
-                        className="py-2.5 bg-secondary/50 border border-border text-foreground rounded-xl text-sm font-bold active:scale-95 cursor-pointer hover:bg-secondary transition-all"
+                        className="py-3 bg-secondary/80 border border-border text-foreground rounded-xl text-sm font-bold active:scale-95 cursor-pointer hover:bg-secondary transition-all"
                       >
                         Cancelar
                       </button>
                     </div>
                   )}
 
-                  <button onClick={() => setShowDeleteConfirm(true)} className="w-full mt-4 py-2.5 border border-destructive/20 bg-destructive/5 text-destructive hover:bg-destructive/10 text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-2 active:scale-95 cursor-pointer">
-                    <Trash2 className="h-3.5 w-3.5" /> Borrar Usuario
+                  <button onClick={() => setShowDeleteConfirm(true)} className="w-full py-3 border border-destructive/30 bg-destructive/5 text-destructive hover:bg-destructive/10 text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-2 active:scale-95 cursor-pointer">
+                    <Trash2 className="h-4 w-4" /> Borrar Usuario
                   </button>
+                
 
                   {/* MODAL DE CONFIRMACIÓN */}
                   {showDeleteConfirm && (

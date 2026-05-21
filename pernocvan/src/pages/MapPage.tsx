@@ -39,20 +39,22 @@ const tiposLugar = [
   { id: 'parking', icono: '🅿️', nombre: 'Parking', color: 'bg-blue-600', seccion: 'principal', query: 'node["amenity"="parking"]; way["amenity"="parking"];' }, 
   { id: 'gasolinera', icono: '⛽', nombre: 'Gasolinera', color: 'bg-red-600', seccion: 'principal', query: 'node["amenity"="fuel"]; way["amenity"="fuel"];' },
   { id: 'spot', icono: '🌲', nombre: 'Naturaleza', color: 'bg-emerald-700', seccion: 'principal', query: 'node["leisure"="park"]; way["leisure"="park"]; node["leisure"="garden"]; way["leisure"="garden"]; node["tourism"="viewpoint"];' },
-  
+  { id: 'principal_monumento', icono: '🏛️', nombre: 'Monumentos', color: 'bg-amber-600', seccion: 'principal', query: 'node["tourism"="monument"]; way["tourism"="monument"]; node["historic"="monument"]; way["historic"="monument"];' },
+
   // Sección 2: Servicios adicionales
-  { id: 'servicio_agua', icono: '💧', nombre: 'Agua Potable', color: 'bg-sky-600', seccion: 'servicio', query: 'node["amenity"="drinking_water"];' },
+  { id: 'servicio_supermercado', icono: '🛒', nombre: 'Supermercados', color: 'bg-green-500', seccion: 'servicio', query: 'node["shop"="supermarket"]; way["shop"="supermarket"];' },
+  { id: 'servicio_agua', icono: '💧', nombre: 'Agua potable', color: 'bg-sky-600', seccion: 'servicio', query: 'node["amenity"="drinking_water"];' },
   { id: 'servicio_ducha', icono: '🚿', nombre: 'Duchas', color: 'bg-cyan-500', seccion: 'servicio', query: 'node["amenity"="shower"]; way["amenity"="shower"];' },
   // { id: 'servicio_electricidad', icono: '⚡', nombre: 'Electricidad', color: 'bg-yellow-500', seccion: 'servicio', query: 'node["power"="outlet"];' },
-  { id: 'servicio_wc', icono: '🚻', nombre: 'Baños / WC', color: 'bg-stone-500', seccion: 'servicio', query: 'node["amenity"="toilets"]; way["amenity"="toilets"];' },
+  { id: 'servicio_wc', icono: '🚻', nombre: 'Baños/WC', color: 'bg-stone-500', seccion: 'servicio', query: 'node["amenity"="toilets"]; way["amenity"="toilets"];' },
   { id: 'servicio_wifi', icono: '📶', nombre: 'Wifi', color: 'bg-indigo-500', seccion: 'servicio', query: 'node["internet_access"="wlan"];' },
   // { id: 'servicio_lavanderia', icono: '🧺', nombre: 'Lavandería', color: 'bg-pink-500', seccion: 'servicio', query: 'node["amenity"="launderette"]; way["amenity"="launderette"]; node["washing_machine"="yes"]; way["washing_machine"="yes"];' },
-  { id: 'servicio_picnic', icono: '🪵', nombre: 'Zona de Pícnic', color: 'bg-orange-700', seccion: 'servicio', query: 'node["leisure"="picnic_table"]; way["leisure"="picnic_table"]; node["tourism"="picnic_site"]; way["tourism"="picnic_site"];' },
+  // { id: 'servicio_picnic', icono: '🪵', nombre: 'Zona de pícnic', color: 'bg-orange-700', seccion: 'servicio', query: 'node["leisure"="picnic_table"]; way["leisure"="picnic_table"]; node["tourism"="picnic_site"]; way["tourism"="picnic_site"];' },
   { id: 'servicio_basura', icono: '🗑️', nombre: 'Basuras', color: 'bg-teal-600', seccion: 'servicio', query: 'node["amenity"="waste_disposal"]; node["amenity"="waste_basket"];' },
   // { id: 'servicio_vaciado', icono: '🚰', nombre: 'Vaciado de Aguas', color: 'bg-lime-600', seccion: 'servicio', query: 'node["amenity"="sanitary_dump_station"]; way["amenity"="sanitary_dump_station"];' },
-  { id: 'servicio_mascotas', icono: '🐾', nombre: 'Admite Mascotas', color: 'bg-amber-700', seccion: 'servicio', query: 'node["dog"="yes"]; way["dog"="yes"];' },
-  { id: 'servicio_salud', icono: '🏥', nombre: 'Farmacias y Salud', color: 'bg-rose-600', seccion: 'servicio', query: 'node["amenity"="pharmacy"]; node["amenity"="hospital"];' },
-  { id: 'servicio_carga', icono: '🔌', nombre: 'Puntos de Carga EV', color: 'bg-cyan-600', seccion: 'servicio', query: 'node["amenity"="charging_station"]; way["amenity"="charging_station"];' }
+  // { id: 'servicio_mascotas', icono: '🐾', nombre: 'Admite mascotas', color: 'bg-amber-700', seccion: 'servicio', query: 'node["dog"="yes"]; way["dog"="yes"];' },
+  { id: 'servicio_salud', icono: '🏥', nombre: 'Farmacias y salud', color: 'bg-rose-600', seccion: 'servicio', query: 'node["amenity"="pharmacy"]; node["amenity"="hospital"];' },
+  { id: 'servicio_carga', icono: '🔌', nombre: 'Puntos de carga EV', color: 'bg-cyan-600', seccion: 'servicio', query: 'node["amenity"="charging_station"]; way["amenity"="charging_station"];' }
 ];
 
 // FUNCION PARA EL TAMAÑO DEL MAPA
@@ -412,6 +414,7 @@ const fetchComentarios = async () => {
     } catch (error) { mostrarNotificacion("Error de búsqueda."); }
   };
 
+  
   { /* Función para ejecutar la búsqueda de sitios */ }
   const ejecutarBusquedaSitios = async (desdeBuscador = false) => {
     if (!desdeBuscador) setMostrarFiltros(false);
@@ -477,14 +480,17 @@ const fetchComentarios = async () => {
         else if (tags.leisure === 'park' || tags.leisure === 'garden' || tags.tourism === 'viewpoint') {
           tipoAsignado = 'spot';
         } 
-        else if (tags.leisure === 'picnic_table' || tags.tourism === 'picnic_site') tipoAsignado = 'servicio_picnic';
+        // else if (tags.leisure === 'picnic_table' || tags.tourism === 'picnic_site') tipoAsignado = 'servicio_picnic';
         else if (tags.amenity === 'waste_disposal' || tags.amenity === 'waste_basket') tipoAsignado = 'servicio_basura';
         // else if (tags.amenity === 'sanitary_dump_station') tipoAsignado = 'servicio_vaciado';
-        else if (tags.dog === 'yes') tipoAsignado = 'servicio_mascotas';
+        // else if (tags.dog === 'yes') tipoAsignado = 'servicio_mascotas';
 
         else if (tags.amenity === 'pharmacy' || tags.amenity === 'hospital') tipoAsignado = 'servicio_salud';
         else if (tags.amenity === 'charging_station') tipoAsignado = 'servicio_carga';
         // else if (tags.amenity === 'launderette') { tipoAsignado = 'servicio_lavanderia';}
+
+        else if (tags.tourism === 'monument' || tags.historic) tipoAsignado = 'principal_monumento';
+        else if (tags.shop === 'supermarket') tipoAsignado = 'servicio_supermercado';
 
         else {
           tipoAsignado = 'spot'; // Por defecto
@@ -1230,7 +1236,7 @@ const persistirRutaEnSupabase = async () => {
         </MapContainer>
       </div>
 
-    {/* MODAL DE INFORMACIÓN */}
+   {/* MODAL DE INFORMACIÓN */}
     {selectedPoint && (
       <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
         
@@ -1243,19 +1249,11 @@ const persistirRutaEnSupabase = async () => {
           onClick={(e) => e.stopPropagation()}
         >
           
-          {/*  PARTE IZQUIERDA: INFORMACIÓN */}
-          <div className="flex-1 p-8 flex flex-col justify-between">
-
-            {/* BOTÓN CIERRE (Cruz en la esquina superior) */}
-            <button 
-              onClick={() => setSelectedPoint(null)}
-              className="absolute top-6 right-6 w-10 h-10 flex items-center justify-center rounded-full bg-zinc-50 text-zinc-400 hover:bg-zinc-100 hover:text-zinc-900 transition-all z-20 cursor-pointer"
-            >
-              <span className="text-xl font-light">✕</span>
-            </button>
+          {/* PARTE IZQUIERDA: INFORMACIÓN */}
+          <div className="flex-1 p-8 flex flex-col justify-between relative">
 
             <div>
-                <div className="flex items-center gap-2 mb-2">
+                <div className="flex items-center gap-2 mb-2 mt-4 md:mt-0">
                 <span className="text-[10px] font-black text-zinc-950 uppercase tracking-[0.2em]">
                   VanLife
                 </span>
@@ -1288,16 +1286,7 @@ const persistirRutaEnSupabase = async () => {
                 </div>
 
                 <div className="space-y-6">
-                  {/* Ubicación Estilizada */}
-                      {/* {selectedPoint.direccion && 
-
-                  <div className="flex items-start gap-3">
-                    <div className="w-8 h-8 rounded-full bg-zinc-50 flex items-center justify-center shrink-0 border border-zinc-100">
-                      <span className="text-xs">📍</span>
-                    </div>
-                  </div>
-                  } */}
-
+                  
                   {/* Coordenadas */}
                   <div className="bg-zinc-50 p-4 rounded-2xl border border-zinc-100">
                     <div className="flex justify-between items-center">
@@ -1318,9 +1307,14 @@ const persistirRutaEnSupabase = async () => {
 
           </div>
 
-          {/* 2. PARTE DERECHA: IMAGEN / ICONO */}
-          <div className="w-full md:w-64 bg-zinc-50 flex items-center justify-center relative overflow-hidden border-l border-zinc-100 shrink-0">
+          {/* PARTE DERECHA: IMAGEN / ICONO */}
+          <div 
+            onClick={() => window.innerWidth < 768 && setSelectedPoint(null)}
+            className="w-full md:w-64 bg-zinc-50 flex items-center justify-center relative overflow-hidden border-l border-zinc-100 shrink-0 cursor-pointer md:cursor-default py-8 md:py-0"
+            title="Toca para cerrar"
+          >
             
+            {/* Img */}
             <img 
               src={`https://images.unsplash.com/photo-1523987355523-c7b5b0dd90a7?auto=format&fit=crop&q=60&w=400`} 
               className="absolute inset-0 w-full h-full object-cover opacity-20 grayscale"
@@ -1328,22 +1322,18 @@ const persistirRutaEnSupabase = async () => {
             />
             
             {/* Icono */}
-            <div className="relative z-10 text-7xl filter drop-shadow-2xl">
-              {tiposLugar.find(t => t.id === selectedPoint.tipo)?.icono || "📍"}
+            <div className="relative z-10 flex flex-col items-center gap-2">
+              <span className="text-7xl filter drop-shadow-2xl leading-none inline-block shrink-0 transition-transform hover:scale-110">
+                {tiposLugar.find(t => t.id === selectedPoint.tipo)?.icono || "📍"}
+              </span>
+              <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest md:hidden mt-2">
+                Pulsa para salir
+              </span>
             </div>
-
-            {/* Cierre en la esquina superior para la versión móvil */}
-            <button 
-              onClick={() => setSelectedPoint(null)}
-              className="absolute top-4 right-4 z-20 md:hidden bg-white/80 p-2 rounded-full text-zinc-600"
-            >
-              ✕
-            </button>
           </div>
         </div>
       </div>
     )}
-
 
     {/* SELECTOR DE CAPA Y ZOOM (Derecha) */}
     <div className="fixed top-40 right-10 z-[50] flex flex-col gap-5 pointer-events-auto">

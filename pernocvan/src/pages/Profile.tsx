@@ -250,42 +250,62 @@ export default function Profile() {
                     )}
 
                 </form>
-
                 {/* MIS SITIOS FAVORITOS */}
-                <div className="bg-card p-8 rounded-2xl border shadow-sm">
-                    <div className="flex items-center gap-2 mb-6 border-b pb-4">
-                        <Heart className="h-6 w-6 text-red-500" />
-                        <h3 className="text-xl font-bold">Mis sitios favoritos</h3>
-                    </div>
-                    {favoritos.length === 0 ? <p className="text-muted-foreground italic">Aún no has guardado sitios.</p> : (
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            {favoritos.map((f) => (
-                                <div key={f.id} className="p-4 border rounded-xl flex items-center justify-between hover:bg-secondary/50 transition-all">
-                                    <div className="flex items-center gap-3">
-                                        {renderIconoTipo(f.tipo)}
-                                        <span className="font-semibold">{f.nombre}</span>
-                                    </div>
-                                    <button onClick={() => eliminarFavorito(f.id)} className="text-muted-foreground hover:text-red-500"><Trash2 className="h-4 w-4 cursor-pointer" /></button>
+                        <div className="bg-card p-8 rounded-2xl border border-border shadow-sm">
+                            <div className="flex items-center gap-2 mb-6 border-b border-border pb-4">
+                                <Heart className="h-6 w-6 text-red-500" />
+                                <h3 className="text-xl font-bold">Mis sitios favoritos</h3>
+                            </div>
+                            {favoritos.length === 0 ? <p className="text-muted-foreground italic">Aún no has guardado sitios.</p> : (
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    {favoritos.map((f) => (
+                                        <div key={f.id}
+                                            className="group p-4 border border-border bg-background rounded-xl flex items-center justify-between transition-all duration-300 hover:scale-[1.01] hover:shadow-md hover:border-primary/30 relative hover:z-10"
+                                        >
+                                            <div className="flex items-center gap-3 overflow-hidden pr-2">
+                                                <div className="transition-transform duration-300 group-hover:scale-110 shrink-0">
+                                                    {renderIconoTipo(f.tipo)}
+                                                </div>
+                                                <span className="font-semibold text-foreground truncate">{f.nombre}</span>
+                                            </div>
+                                            <button 
+                                                onClick={() => eliminarFavorito(f.id)} 
+                                                className="text-muted-foreground hover:text-red-500 transition-all duration-300 hover:scale-110 active:scale-95 p-1 shrink-0"
+                                                title="Eliminar favorito"
+                                            >
+                                                <Trash2 className="h-4 w-4 cursor-pointer" />
+                                            </button>
+                                        </div>
+                                    ))}
                                 </div>
-                            ))}
+                            )}
                         </div>
-                    )}
-                </div>
 
                 {/* MIS RUTAS */}
-                <div className="bg-card p-8 rounded-2xl border shadow-sm">
-                    <div className="flex items-center gap-2 mb-6 border-b pb-4">
+                <div className="bg-card p-8 rounded-2xl border border-border shadow-sm">
+                    <div className="flex items-center gap-2 mb-6 border-b border-border pb-4">
                         <Route className="h-6 w-6 text-primary" />
                         <h3 className="text-xl font-bold">Mis rutas</h3>
                     </div>
                     {rutas.length === 0 ? <p className="text-muted-foreground italic">No tienes rutas guardadas.</p> : (
                         <div className="space-y-3">
                             {rutas.map((r) => (
-                                <div key={r.id} className="p-4 border rounded-xl flex justify-between items-center hover:bg-secondary/50 transition-all">
-                                    <div className="flex items-center gap-3 font-semibold">
-                                        {r.origen} <ArrowRight className="h-4 w-4 text-muted-foreground" /> {r.destino}
+                                <div key={r.id}
+                                    className="group p-4 border border-border bg-background rounded-xl flex justify-between items-center transition-all duration-300 hover:scale-[1.01] hover:shadow-md hover:border-primary/30 relative hover:z-10"
+                                >
+                                    <div className="flex items-center gap-3 font-semibold text-foreground">
+                                        {r.origen} 
+                                        
+                                        <ArrowRight className="h-4 w-4 text-muted-foreground transition-all duration-300 group-hover:translate-x-1 group-hover:text-primary" /> 
+                                        {r.destino}
                                     </div>
-                                    <button onClick={() => eliminarRuta(r.id)} className="text-muted-foreground hover:text-red-500"><Trash2 className="h-4 w-4 cursor-pointer" /></button>
+                                    <button 
+                                        onClick={() => eliminarRuta(r.id)} 
+                                        className="text-muted-foreground hover:text-red-500 transition-all duration-300 hover:scale-110 active:scale-95 p-1"
+                                        title="Eliminar ruta"
+                                    >
+                                        <Trash2 className="h-4 w-4 cursor-pointer" />
+                                    </button>
                                 </div>
                             ))}
                         </div>

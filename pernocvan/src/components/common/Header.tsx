@@ -107,12 +107,12 @@ export const Header = () => {
             <Button variant="ghost" asChild className="cursor-pointer gap-2 text-muted-foreground hover:text-foreground h-9 px-3">
               <Link to="/mapa"><Map className="h-4 w-4" /><span className="text-sm font-medium">Mapa</span></Link>
             </Button>
-            <Button variant="ghost" className="cursor-pointer gap-2 text-muted-foreground hover:text-foreground h-9 px-3" title="Cambiar idioma">
+            {/* <Button variant="ghost" className="cursor-pointer gap-2 text-muted-foreground hover:text-foreground h-9 px-3" title="Cambiar idioma">
               <Globe className="h-4 w-4" /><span className="text-sm font-medium">ES</span>
             </Button>
             <Button variant="ghost" size="icon" className="cursor-pointer text-muted-foreground hover:text-foreground h-9 w-9" title="Cambiar tema">
               <Sun className="h-4 w-4 dark:hidden" /><Moon className="h-4 w-4 hidden dark:block" />
-            </Button>
+            </Button> */}
           </div>
 
           {session ? (

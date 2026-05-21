@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
@@ -101,6 +101,7 @@ export default function LoginForm() {
     }
 };
 
+
     return (
         <div className="flex justify-center bg-background pt-10 pb-40 px-4">
             
@@ -160,7 +161,7 @@ export default function LoginForm() {
                     
                     {/* Olvidaste tu contraseña */}
                     <div className="text-right">
-                    <Dialog>
+                    <Dialog modal={false}>
                         <DialogTrigger asChild>
                         <button type="button" className="text-sm font-semibold text-primary hover:underline cursor-pointer bg-transparent">
                             ¿Has olvidado tu contraseña?
