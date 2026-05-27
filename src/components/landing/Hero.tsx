@@ -66,17 +66,28 @@ export const Hero = () => {
 
     <div className="relative z-10 w-full max-w-2xl px-6 text-center">
       {/* TÍTULO AJUSTADO */}
-      <h2 className="text-4xl md:text-7xl font-black text-white mb-6 tracking-tighter leading-[0.9] shadow-sm">
-        TU VIAJE EMPIEZA <br className="hidden md:block" />
+      {/* TÍTULO AJUSTADO PARA MÓVIL Y DESKTOP */}
+      {/* Añadimos leading-[1.1] en móvil para que respire, y md:leading-[0.9] en ordenador */}
+      <h2 className="text-5xl md:text-7xl lg:text-8xl font-black text-white mb-6 tracking-tighter leading-[1.1] md:leading-[0.9] drop-shadow-2xl">
         
-        <span className="text-zinc-950 bg-white py-1 px-4 rounded-xl md:rounded-2xl mx-1 inline-block shadow-xl border border-zinc-200 mt-2 md:mt-0">
+        {/* Usamos "block" en móvil para que cada palabra sea una fila perfecta */}
+        <span className="block md:inline">TU VIAJE</span> 
+        <br className="hidden md:block" />
+        
+        <span className="block md:inline">EMPIEZA</span> 
+        <br className="hidden md:block" />
+        
+        {/* Caja blanca */}
+        <span className="text-zinc-950 bg-white py-1 md:py-2 px-6 rounded-xl md:rounded-2xl inline-block shadow-2xl mt-4 md:mt-5">
           AQUÍ
         </span>
       </h2>
       
-      {/* <p className="text-lg md:text-xl text-zinc-200 mb-10 font-medium opacity-90">
-        Encuentra tu refugio ideal y todo lo necesario para disfrutar del camino.
-      </p> */}
+      <p className="text-lg md:text-xl text-zinc-200 mb-5 font-medium opacity-90 max-w-[280px] sm:max-w-none mx-auto md:mx-0">
+        Encuentra todo lo necesario para disfrutar del camino.
+      </p>
+
+    
 
       {/* BUSCADOR INTELIGENTE */}
       <div className="relative w-full">
@@ -116,7 +127,7 @@ export const Hero = () => {
       </div>
 
       {/* BOTÓN */}
-      <div className="mt-8">
+      <div className="mt-12">
         <button 
           onClick={() => navigate('/mapa')}
           className="group inline-flex items-center gap-2 bg-black/30 hover:bg-white text-white hover:text-black border border-white/20 px-8 py-4 rounded-full font-bold text-sm transition-all duration-300 backdrop-blur-md cursor-pointer hover:scale-105 active:scale-95"

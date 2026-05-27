@@ -114,7 +114,7 @@ export default function SignUpForm() {
 
             // Éxito total
             toast.success("¡Cuenta creada con éxito!");
-            console.log("Usuario creado en DB:", data.user);
+            console.log("Usuario creado ", data.user);
             
             navigate("/login");
 
@@ -128,7 +128,7 @@ export default function SignUpForm() {
 
     return (
         <div className="flex justify-center bg-background pt-10 pb-40 px-4">
-        <form onSubmit={handleSubmit} className="w-full max-w-lg rounded-2xl border border-border bg-card p-10 shadow-sm">
+        <form onSubmit={handleSubmit} noValidate className="w-full max-w-lg rounded-2xl border border-border bg-card p-10 shadow-sm">
             
             {/* Cabecera */}
             <div className="mb-6 space-y-2 text-center">

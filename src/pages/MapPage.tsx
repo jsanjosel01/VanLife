@@ -832,7 +832,8 @@ const persistirRutaEnSupabase = async () => {
             style={{ maxHeight: 'calc(100vh - 420px)' }}
           >
             {/* SCROLL INTERNO */}
-            <div className="p-4 overflow-y-auto flex-1 min-h-0 custom-scrollbar"> 
+            <div className="p-4 overflow-y-auto flex-1 min-h-0 custom-scrollbar bg-white" style={{ colorScheme: 'light' }}
+            >
               
               {/*  TIPOS DE LUGAR PRINCIPALES */}
               <h3 className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-3">
@@ -1395,10 +1396,13 @@ const persistirRutaEnSupabase = async () => {
       {/* TOAST DE NOTIFICACIÓN */}
       {mensajeFlotante && (
         <div className="fixed top-6 right-6 z-[9999] animate-in slide-in-from-top-4 duration-300">
-          <div className="bg-white text-zinc-900 px-6 py-3 rounded-full shadow-2xl flex items-center gap-3 border border-zinc-100">
+          <div className="bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white px-6 py-3 rounded-full shadow-2xl flex items-center gap-3 border border-zinc-100 dark:border-zinc-700">
               
             <p className="font-bold text-sm">{mensajeFlotante}</p>
-            <button onClick={() => setMensajeFlotante("")} className="ml-2 text-zinc-400 hover:text-white">✕</button>
+
+            <button onClick={() => setMensajeFlotante("")} className="ml-2 text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors"  >
+              ✕
+            </button>
           </div>
         </div>
       )}
