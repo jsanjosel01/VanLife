@@ -434,7 +434,8 @@ useEffect(() => {
 
     { /* Si no hay filtros activos, no hacemos la consulta */ }
     const query = `[out:json][timeout:25];(${queryBody});out center;`;
-    const url = `https://lz4.overpass-api.de/api/interpreter?data=${encodeURIComponent(query)}`;
+    // Llamamos a nuestro proxy interno en lugar de a Overpass directamente
+    const url = `/api/overpass?data=${encodeURIComponent(query)}`;
 
     try {
       const response = await fetch(url);

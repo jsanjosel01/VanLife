@@ -1,5 +1,12 @@
 {
   "rewrites": [
-      {"source": "/(.*)", "destination": "/"}
+    { 
+      "source": "/api/overpass", 
+      "destination": "https://overpass-api.de/api/interpreter" 
+    },
+    { 
+      "source": "/(.*)", 
+      "destination": "/" 
+    }
   ]
 }
