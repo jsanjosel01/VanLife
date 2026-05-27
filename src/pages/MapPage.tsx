@@ -760,7 +760,7 @@ const persistirRutaEnSupabase = async () => {
     <div className="relative h-screen w-full bg-zinc-100 overflow-hidden font-sans select-none">
       
     {/* BUSCADOR + BOTÓN AFINAR */}
-    <div className="fixed top-40 left-10 z-[50] flex flex-col gap-3 w-[340px] pointer-events-auto max-h-[calc(100vh-180px)] overflow-hidden">
+    <div className="fixed top-20 left-4 right-4 z-[40] flex flex-col gap-2 pointer-events-auto md:top-40 md:left-10 md:w-[340px]">
     
       <div className="relative">
         <form 
@@ -1333,7 +1333,7 @@ const persistirRutaEnSupabase = async () => {
     )}
 
     {/* SELECTOR DE CAPA Y ZOOM (Derecha) */}
-    <div className="fixed top-40 right-10 z-[50] flex flex-col gap-5 pointer-events-auto">
+    <div className="fixed bottom-10 right-4 z-[40] flex flex-col gap-3 pointer-events-auto md:top-40 md:right-10 md:bottom-auto">
 
       {/* Botón de Mi Ubicación */}
         <button 
