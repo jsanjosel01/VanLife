@@ -1,19 +1,17 @@
 export default async function handler(req: any, res: any) {
-  // Asegurarnos de que solo aceptamos peticiones POST
   if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method Not Allowed. Use POST.' });
+    return res.status(405).json({ error: 'Método no permitido. Usa POST.' });
   }
 
   try {
-    // Extraemos la query que nos envía el MapPage.tsx
     const { query } = req.body;
+    console.log("1. Query recibida en Vercel:", query);
 
     if (!query) {
       return res.status(400).json({ error: 'Falta la query en el body' });
     }
 
-    // Hacemos la petición a Overpass de servidor a servidor (Sin problemas de CORS)
-    // Usamos x-www-form-urlencoded que es el formato estricto que pide Overpass
+    console.log("2. Enviando petición a Overpass...");
     const response = await fetch('https://overpass-api.de/api/interpreter', {
       method: 'POST',
       headers: {
@@ -22,18 +20,26 @@ export default async function handler(req: any, res: any) {
       body: `data=${encodeURIComponent(query)}`
     });
 
+    // Si Overpass rechaza la petición, capturamos el motivo exacto
     if (!response.ok) {
-      throw new Error(`Overpass falló con código: ${response.status}`);
+      const errorText = await response.text();
+      console.error("3. Error de Overpass:", response.status, errorText);
+      return res.status(response.status).json({ 
+        error: `Overpass falló con código ${response.status}`, 
+        detalles: errorText 
+      });
     }
 
-    // Parseamos la respuesta de Overpass
     const data = await response.json();
-    
-    // Y se la devolvemos felizmente a tu frontend
+    console.log("3. Datos recibidos correctamente de Overpass");
     return res.status(200).json(data);
 
   } catch (error: any) {
-    console.error('Error interno del proxy de Overpass:', error);
-    return res.status(500).json({ error: 'Error al contactar con Overpass' });
+    // Si falla el servidor de Vercel (por ejemplo, porque la función fetch no existe o hay un timeout)
+    console.error('Error fatal en el servidor de Vercel:', error.message);
+    return res.status(500).json({ 
+      error: 'Error interno en Vercel', 
+      detalles: error.message 
+    });
   }
 }
