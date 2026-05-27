@@ -434,19 +434,25 @@ useEffect(() => {
 
     { /* Si no hay filtros activos, no hacemos la consulta */ }
     const query = `[out:json][timeout:25];(${queryBody});out center;`;
-    // Llamamos a nuestro proxy interno en lugar de a Overpass directamente
-    // Apuntamos al servidor oficial principal
-    const url = 'https://overpass-api.de/api/interpreter';
+
+    // 1. Apuntamos a nuestra propia API interna (¡NUNCA a Overpass directamente!)
+    const url = '/api/overpass';
 
     try {
-      // Hacemos una petición POST enviando la query oculta en el "body"
+      // 2. Hacemos la petición a nuestro backend
       const response = await fetch(url, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
+          'Content-Type': 'application/json'
         },
-        body: `data=${encodeURIComponent(query)}`
+        // 3. Enviamos la query empaquetada en JSON
+        body: JSON.stringify({ query: query })
       });
+
+      // Si hay un error en nuestra API interna, lo mostramos
+      if (!response.ok) {
+        throw new Error("Error en la petición al proxy");
+      }
       
       const data = await response.json();
       
