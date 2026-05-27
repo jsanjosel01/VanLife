@@ -435,11 +435,19 @@ useEffect(() => {
     { /* Si no hay filtros activos, no hacemos la consulta */ }
     const query = `[out:json][timeout:25];(${queryBody});out center;`;
     // Llamamos a nuestro proxy interno en lugar de a Overpass directamente
-    const url = `/api/overpass?data=${encodeURIComponent(query)}`;
-    console.log("LA URL QUE SE ESTÁ USANDO ES:", url);
+    // Apuntamos al servidor oficial principal
+    const url = 'https://overpass-api.de/api/interpreter';
 
     try {
-      const response = await fetch(url);
+      // Hacemos una petición POST enviando la query oculta en el "body"
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: `data=${encodeURIComponent(query)}`
+      });
+      
       const data = await response.json();
       
       const nuevosPuntos = data.elements.filter((el: any) => el.lat || el.center).map((el: any) => {
