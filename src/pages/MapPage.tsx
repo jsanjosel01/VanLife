@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { MapContainer, TileLayer, Marker, useMap, Polyline } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Polyline } from 'react-leaflet';
 import L from 'leaflet';
 // @ts-ignore
 import 'leaflet/dist/leaflet.css';
@@ -58,27 +58,27 @@ const tiposLugar = [
 ];
 
 // FUNCION PARA EL TAMAÑO DEL MAPA
-function ResizeMap() {
-  const map = useMap();
-  useEffect(() => {
-    // Damos un poco de tiempo
-    const timer = setTimeout(() => {
-      map.invalidateSize();
-    }, 300);
-    return () => clearTimeout(timer);
-  }, [map]);
-  return null;
-}
+// function ResizeMap() {
+//   const map = useMap();
+//   useEffect(() => {
+//     // Damos un poco de tiempo
+//     const timer = setTimeout(() => {
+//       map.invalidateSize();
+//     }, 300);
+//     return () => clearTimeout(timer);
+//   }, [map]);
+//   return null;
+// }
 
 // FUNCIÓN "TRADUCTORA" DE SERVICIOS (Basada en las etiquetas OSM)
-const getServicios = (tags: any) => {
-  const servicios = [];
-  if (tags.amenity === 'waste_basket') servicios.push('Basura');
-  if (tags.amenity === 'drinking_water') servicios.push('Agua');
-  if (tags.amenity === 'parking') servicios.push('Parking');
-  if (tags.tourism === 'camp_site' || tags.amenity === 'motorhome_stopover') servicios.push('Dormir');
-  return servicios;
-};
+// const getServicios = (tags: any) => {
+//   const servicios = [];
+//   if (tags.amenity === 'waste_basket') servicios.push('Basura');
+//   if (tags.amenity === 'drinking_water') servicios.push('Agua');
+//   if (tags.amenity === 'parking') servicios.push('Parking');
+//   if (tags.tourism === 'camp_site' || tags.amenity === 'motorhome_stopover') servicios.push('Dormir');
+//   return servicios;
+// };
 
 
 export const MapPage = () => {
@@ -103,11 +103,7 @@ const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
 
   // Estados de Detalle y Comentarios
   const [selectedPoint, setSelectedPoint] = useState<any>(null);
-  const [viewMode, setViewMode] = useState('preview'); 
-  const [isWritingComment, setIsWritingComment] = useState(false);
-  const [comentarios, setComentarios] = useState<any[]>([]);
-  const [nuevoComentario, setNuevoComentario] = useState("");
-
+  
   // Estado para el modo de mapa (calle o satélite)
   const [modoMapa, setModoMapa] = useState<'calle' | 'satelite'>('calle');
 
@@ -166,29 +162,29 @@ const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
 
 
 // Función para trazar la ruta por carretera usando OSRM
-const trazarRutaPorCarretera = async (latOrigen: number, lonOrigen: number, latDestino: number, lonDestino: number) => {
-  try {
-    const url = `https://router.project-osrm.org/route/v1/driving/${lonOrigen},${latOrigen};${lonDestino},${latDestino}?overview=full&geometries=geojson`;
-    const res = await fetch(url);
-    const data = await res.json();
+// const trazarRutaPorCarretera = async (latOrigen: number, lonOrigen: number, latDestino: number, lonDestino: number) => {
+//   try {
+//     const url = `https://router.project-osrm.org/route/v1/driving/${lonOrigen},${latOrigen};${lonDestino},${latDestino}?overview=full&geometries=geojson`;
+//     const res = await fetch(url);
+//     const data = await res.json();
 
-    if (data.routes && data.routes.length > 0) {
-      // OSRM devuelve las coordenadas como [longitud, latitud], Leaflet las necesita al revés [latitud, longitud]
-      const puntosCarretera = data.routes[0].geometry.coordinates.map((coord: number[]) => [coord[1], coord[0]]);
-      setCoordenadasRuta(puntosCarretera);
+//     if (data.routes && data.routes.length > 0) {
+//       // OSRM devuelve las coordenadas como [longitud, latitud], Leaflet las necesita al revés [latitud, longitud]
+//       const puntosCarretera = data.routes[0].geometry.coordinates.map((coord: number[]) => [coord[1], coord[0]]);
+//       setCoordenadasRuta(puntosCarretera);
 
-      if (mapRef.current) {
-        mapRef.current.fitBounds(puntosCarretera, { padding: [50, 50] });
-      }
-    } else {
-      // Mensaje humanizado
-      mostrarNotificacion(" No hemos podido calcular el trayecto por carretera entre estos puntos.");
-    }
-  } catch (error) {
-    console.error(error);
-    mostrarNotificacion(" Ha ocurrido un error al conectar con el servidor de rutas.");
-  }
-};
+//       if (mapRef.current) {
+//         mapRef.current.fitBounds(puntosCarretera, { padding: [50, 50] });
+//       }
+//     } else {
+//       // Mensaje humanizado
+//       mostrarNotificacion(" No hemos podido calcular el trayecto por carretera entre estos puntos.");
+//     }
+//   } catch (error) {
+//     console.error(error);
+//     mostrarNotificacion(" Ha ocurrido un error al conectar con el servidor de rutas.");
+//   }
+// };
 
 // Función para procesar el origen y destino, obtener sus coordenadas y trazar la ruta
 const procesarYMostrarRuta = async () => {
@@ -268,9 +264,7 @@ useEffect(() => {
             mapRef.current.setView(nuevaPos, 13);
           }
         },
-        (error) => {
-          console.log("El usuario denegó el GPS o hubo un error.");
-        }
+        
       );
     }
   }, [locationParam]);
@@ -318,9 +312,9 @@ useEffect(() => {
   }, [locationParam]); // Solo cuando cambie la ciudad en la URL
 
   // 3) Cargar comentarios de Supabase
-  useEffect(() => {
-    fetchComentarios();
-  }, []);
+  // useEffect(() => {
+  //   fetchComentarios();
+  // }, []);
 
   useEffect(() => {
   const buscarSugerencias = async () => {
@@ -345,15 +339,15 @@ useEffect(() => {
 
 
 // Función para cargar los comentarios
-const fetchComentarios = async () => {
-  const { data, error } = await supabase
-    .from('comentarios')
-    .select('*') // Podrías añadir nombres de usuario aquí después
-    .order('created_at', { ascending: false });
+// const fetchComentarios = async () => {
+//   const { data, error } = await supabase
+//     .from('comentarios')
+//     .select('*') // Podrías añadir nombres de usuario aquí después
+//     .order('created_at', { ascending: false });
 
-  if (error) console.error("Error al cargar:", error);
-  else setComentarios(data || []);
-};
+//   if (error) console.error("Error al cargar:", error);
+//   else setComentarios(data || []);
+// };
 
 
 // const handleEnviarComentario = async () => {
@@ -376,20 +370,20 @@ const fetchComentarios = async () => {
   
 
   // función que gestiona el clicK
-  const handleComentar = () => {
-    // Antes decía !isLoggedIn, ahora debe decir !isAuthenticated
-    if (!isAuthenticated) { 
-      mostrarNotificacion("Debes estar registrado para poder opinar.");
-    } else {
-      setIsWritingComment(true); 
-    }
-  };
+  // const handleComentar = () => {
+  //   // Antes decía !isLoggedIn, ahora debe decir !isAuthenticated
+  //   if (!isAuthenticated) { 
+  //     mostrarNotificacion("Debes estar registrado para poder opinar.");
+  //   } else {
+  //     setIsWritingComment(true); 
+  //   }
+  // };
 
-    useEffect(() => {
-    if (selectedPoint) {
-      setViewMode('preview');
-    }
-  }, [selectedPoint]);// Puede ser 'preview' o 'full'
+  //   useEffect(() => {
+  //   if (selectedPoint) {
+  //     setViewMode('preview');
+  //   }
+  // }, [selectedPoint]);// Puede ser 'preview' o 'full'
 
     {/* Función para mostrar notificaciones temporales */}
     const mostrarNotificacion = (mensaje: string) => {
@@ -555,19 +549,19 @@ const fetchComentarios = async () => {
 
 
   // Definimos las capas
-    const capas = {
-      calle: "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",
-      satelite: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
-    };
+    // const capas = {
+    //   calle: "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",
+    //   satelite: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+    // };
 
     {/* BOTONES ZOOM */}
-    function CapturadorDeMapa({ setMapa }: { setMapa: (map: any) => void }) {
-      const map = useMap(); // Hook oficial de Leaflet
-      useEffect(() => {
-        if (map) setMapa(map);
-      }, [map, setMapa]);
-      return null;
-    }
+    // function CapturadorDeMapa({ setMapa }: { setMapa: (map: any) => void }) {
+    //   const map = useMap(); // Hook oficial de Leaflet
+    //   useEffect(() => {
+    //     if (map) setMapa(map);
+    //   }, [map, setMapa]);
+    //   return null;
+    // }
 
 
 // Funcion para localizar al usuario usando el GPS del navegador

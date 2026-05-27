@@ -1,7 +1,7 @@
 
 import { Compass, MapPin } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 
 export const Hero = () => {

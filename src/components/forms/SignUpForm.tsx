@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Input } from "../ui/input";
-import { Eye, EyeOff, Ban, Loader2  } from "lucide-react";
+import { Eye, EyeOff, Loader2  } from "lucide-react";
 import { Button } from "../ui/button";
 import { toast } from "sonner";
 

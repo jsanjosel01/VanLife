@@ -4,7 +4,7 @@ import { Input } from "../components/ui/input";
 import { Button } from "../components/ui/button";
 import { toast } from "sonner";
 import { AvatarUploader } from "../components/avatar/AvatarUploader";
-import { ArrowRight, Edit2, Fuel, Heart, Loader2, MapPin, Route, Navigation, X, Save, Trash2, Truck, Info, Tent, Trees, ShowerHead, Droplets, Toilet, Wifi, Utensils, PawPrint, Zap, HeartPulse, User} from "lucide-react";
+import { ArrowRight, Fuel, Heart, Loader2, MapPin, Route, Navigation, Trash2, Truck, Info, Tent, Trees, ShowerHead, Droplets, Toilet, Wifi, Utensils, PawPrint, Zap, HeartPulse, User} from "lucide-react";
 import { JSX } from "react/jsx-runtime";
 
 export default function Profile() {
@@ -17,7 +17,7 @@ export default function Profile() {
     // Estados para secciones dinámicas
     const [favoritos, setFavoritos] = useState<any[]>([]);
     const [rutas, setRutas] = useState<any[]>([]);
-    const [email, setEmail] = useState("");
+    // const [ setEmail] = useState("");
     const [userId, setUserId] = useState<string | undefined>(undefined);
     const [memberSince, setMemberSince] = useState("");
 
@@ -27,7 +27,7 @@ export default function Profile() {
         if (!user) return;
 
         setUserId(user.id);
-        setEmail(user.email || "");
+        // setEmail(user.email || "");
 
         if (user.created_at) {
             setMemberSince(new Date(user.created_at).toLocaleDateString('es-ES'));

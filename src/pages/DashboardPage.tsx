@@ -2,7 +2,7 @@ import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "
 import { supabase } from "@/database/supabase/client";
 import { Activity, ArrowUpRight, TrendingUp, Users, Map, Filter } from "lucide-react";
 import { useEffect, useState } from "react";
-import {AreaChart, Area, CartesianGrid, XAxis, BarChart, Bar, YAxis, RadarChart, PolarRadiusAxis, Radar, PolarAngleAxis, PolarGrid } from "recharts";
+import {AreaChart, Area, CartesianGrid, XAxis, BarChart, Bar } from "recharts";
 
 
 export const DashboardPage = () => {

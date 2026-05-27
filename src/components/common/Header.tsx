@@ -5,7 +5,7 @@ import { Button } from '../ui/button';
 import { supabase } from '../../database/supabase/client';
 import type { Session } from '@supabase/supabase-js';
 
-import { Map, Globe, Sun, Moon, Truck, LayoutDashboard, Users, Menu, X, User, LogOut, LogIn, UserPlus} from 'lucide-react';
+import { Map, Sun, Moon, Truck, LayoutDashboard, Users, Menu, X, User, LogOut, LogIn, UserPlus} from 'lucide-react';
 import { useDarkMode } from '@/hooks/useDarkMode';
 
 export const Header = () => {
