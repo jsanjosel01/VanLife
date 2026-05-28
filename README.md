@@ -38,11 +38,11 @@ Nuestra aplicación permite filtrar servicios específicos para facilitar la aut
 * 🔌 **Puntos de Carga EV:** Estaciones de recarga para vehículos eléctricos.
 
 ### 🛠️ Tecnologías Utilizadas
-*🔹 **FRONTEND:** React 19 + Vite + TailwindCSS + TypeScript.
-*🔹 **BASE DE DATOS Y AUTENTICACIÓN:** Supabase (PostgreSQL + Auth + Storage).
-*🔹 **DISEÑO:** Limpio, responsive y con componentes reutilizables (Shadcn UI).
-*🔹 **MAPAS Y DATOS:** Leaflet y OpenStreetMap (Overpass API) para geolocalización.
-*🔹 **ESTADO Y LÓGICA:** Zustand para gestión global.
+* 🔹 **FRONTEND:** React 19 + Vite + TailwindCSS + TypeScript.
+* 🔹 **BASE DE DATOS Y AUTENTICACIÓN:** Supabase (PostgreSQL + Auth + Storage).
+* 🔹 **DISEÑO:** Limpio, responsive y con componentes reutilizables (Shadcn UI).
+* 🔹 **MAPAS Y DATOS:** Leaflet y OpenStreetMap (Overpass API) para geolocalización.
+* 🔹 **ESTADO Y LÓGICA:** Zustand para gestión global.
 
 ## 👥 Matriz de Roles y Permisos
 * 👤 **Invitado:** Acceso de solo lectura: Visualizar landing page, explorar mapa público y registrarse.
@@ -89,7 +89,6 @@ VanLife ha sido concebida como una plataforma escalable. Aunque la versión actu
 
 ## 👨🏼‍🏫 Tutorías y seguimiento
 **TUTOR:** David Elías Martín Nevado
-**NOTA DE SEGUIMIENTO:** Cada sesión siguió la estructura de resumen de avances, demo funcional, bloqueo de riesgos y tareas semanales.
 
 ### 📅 **Resumen de hilos CRONOGRAMA**
 
@@ -103,6 +102,8 @@ VanLife ha sido concebida como una plataforma escalable. Aunque la versión actu
 
 #### **JUNIO: FINALIZACIÓN Y PRESENTACIÓN**
 * **01-JUNIO** | ✅ Presentación final del TFG ante el tribunal.
+
+> **NOTA DE SEGUIMIENTO:** Cada sesión siguió la estructura de resumen de avances, demo funcional, bloqueo de riesgos y tareas semanales.
 
 ---
 
