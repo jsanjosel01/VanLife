@@ -760,7 +760,7 @@ const persistirRutaEnSupabase = async () => {
     <div className="relative h-screen w-full bg-zinc-100 overflow-hidden font-sans select-none">
       
     {/* BUSCADOR + BOTÓN AFINAR */}
-    <div className="fixed top-40 left-10 z-[50] flex flex-col gap-3 w-[340px] pointer-events-auto max-h-[calc(100vh-180px)] overflow-hidden">
+    <div className="fixed top-20 left-4 right-4 md:top-28 md:left-10 md:right-auto z-[50] flex flex-col gap-3 md:w-[340px] pointer-events-auto max-h-[calc(100vh-100px)] md:max-h-[calc(100vh-160px)] overflow-hidden">
     
       <div className="relative">
         <form 
@@ -1139,35 +1139,9 @@ const persistirRutaEnSupabase = async () => {
           </div>
         )}
       </div>
+
+
       </div>
-
-      {/* LISTA DE RESULTADOS (Solo aparece si hay puntos) */}
-      {puntos.length > 0 && (
-        <div className="flex-1 overflow-y-auto mt-2 bg-white rounded-[24px] p-4 border border-zinc-100 shadow-xl custom-scrollbar min-h-0">
-
-          <div className="flex flex-col gap-3">
-            {puntos.map((p) => (
-              <button
-                key={p.id}
-                onClick={() => {
-                  if (mapRef.current) {
-                    mapRef.current.flyTo([p.lat, p.lon], 15);
-                  }
-                }}
-                className="text-left bg-white p-4 rounded-xl border border-zinc-200 hover:border-zinc-400 transition-all shadow-sm w-full group"
-              >
-                <p className="font-bold text-sm">{capitalizar(p.nombre)} </p>
-                <p className="font-bold text-sm text-zinc-900 group-hover:text-[#e03b4b] transition-colors">
-                  {p.nombre}
-                </p>
-                <p className="text-[10px] text-zinc-500 uppercase font-black mt-0.5 tracking-wider">
-                  {p.tipo}
-                </p>
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
 
       
       {/* Cargando, mensaje */}
@@ -1333,7 +1307,7 @@ const persistirRutaEnSupabase = async () => {
     )}
 
     {/* SELECTOR DE CAPA Y ZOOM (Derecha) */}
-    <div className="fixed top-40 right-10 z-[50] flex flex-col gap-5 pointer-events-auto">
+    <div className="fixed top-auto bottom-8 right-4 md:top-28 md:bottom-auto md:right-10 z-[40] md:z-[50] flex flex-col gap-3 md:gap-5 pointer-events-auto">
 
       {/* Botón de Mi Ubicación */}
         <button 

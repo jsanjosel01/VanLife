@@ -167,6 +167,14 @@ export const Header = () => {
             >
               <Link to="/mapa"><Map className="h-5 w-5 mr-3" />Ir al mapa</Link>
             </Button>
+
+            {/* Boton dark/light */}
+            <button onClick={toggleDark}
+              className="flex items-center w-full h-12 p-4 rounded-lg bg-secondary text-secondary-foreground hover:bg-accent transition-colors cursor-pointer"
+            >
+              {isDark ? <Sun size={20} className="mr-3" /> : <Moon size={20} className="mr-3" />}
+              <span className="font-semibold text-base">{isDark ? "Modo Claro" : "Modo Oscuro"}</span>
+            </button>
             
           </div>
 
@@ -209,14 +217,6 @@ export const Header = () => {
 
 
             <div className="w-full h-[1px] bg-border opacity-50" />
-
-            {/* Boton dark/light */}
-            <button onClick={toggleDark}
-              className="flex items-center w-full h-12 p-4 rounded-lg bg-secondary text-secondary-foreground hover:bg-accent transition-colors cursor-pointer"
-            >
-              {isDark ? <Sun size={20} className="mr-3" /> : <Moon size={20} className="mr-3" />}
-              <span className="font-semibold text-base">{isDark ? "Modo Claro" : "Modo Oscuro"}</span>
-          </button>
 
           </div>
         ) : (
