@@ -207,17 +207,6 @@ export const Header = () => {
               <LogOut className="h-5 w-5 mr-3" />Cerrar Sesión
             </Button>
 
-
-            <div className="w-full h-[1px] bg-border opacity-50" />
-
-            {/* Boton dark/light */}
-            <button onClick={toggleDark}
-              className="flex items-center w-full h-12 p-4 rounded-lg bg-secondary text-secondary-foreground hover:bg-accent transition-colors cursor-pointer"
-            >
-              {isDark ? <Sun size={20} className="mr-3" /> : <Moon size={20} className="mr-3" />}
-              <span className="font-semibold text-base">{isDark ? "Modo Claro" : "Modo Oscuro"}</span>
-          </button>
-
           </div>
         ) : (
           <div className="flex flex-col gap-3">
@@ -236,6 +225,18 @@ export const Header = () => {
             </Button>
           </div>
         )}
+
+        <div className="w-full h-[1px] bg-border opacity-50" />
+
+        {/* Boton dark/light */}
+        <Button 
+          variant="outline" 
+          onClick={toggleDark}
+          className="w-full h-12 p-4 justify-start cursor-pointer text-foreground text-base"
+        >
+          {isDark ? <Sun className="h-5 w-5 mr-3" /> : <Moon className="h-5 w-5 mr-3" />}
+          {isDark ? "Modo Claro" : "Modo Oscuro"}
+        </Button>
       </div>
     )}
     </header>

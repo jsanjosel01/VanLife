@@ -1,10 +1,16 @@
-export default async function handler(req: any, res: any) {
+export default async function handler(
+  req: { method?: string; body?: any; query?: any },
+  res: {
+    status: (code: number) => { json: (data: unknown) => void };
+    setHeader: (name: string, value: string) => void;
+    json: (data: unknown) => void;
+  }
+) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Método no permitido. Usa POST.' });
   }
 
   try {
-    // 1. Parseo a prueba de fallos: Si Vercel nos lo da como texto, lo convertimos a objeto
     let body = req.body;
     if (typeof body === 'string') {
       try {
@@ -16,19 +22,16 @@ export default async function handler(req: any, res: any) {
 
     const query = body?.query;
 
-    // Si sigue sin haber query, devolvemos un 400 pero indicando qué nos llegó
     if (!query) {
-      console.error("Cuerpo recibido inválido:", req.body);
       return res.status(400).json({ error: 'Falta la query en el body' });
     }
 
-    // 2. Petición a Overpass con nuestro "DNI" para que no nos bloqueen
     const response = await fetch('https://overpass-api.de/api/interpreter', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
-        'User-Agent': 'VanLifeApp/1.0 (https://vanlife-chi-dun.vercel.app)',
-        'Referer': 'https://vanlife-chi-dun.vercel.app'
+        'User-Agent': 'VanLife-App/1.0 (contacto@vanlife.app)',
+        'Referer': 'https://vanlife.app',
       },
       body: `data=${encodeURIComponent(query)}`
     });
@@ -42,10 +45,12 @@ export default async function handler(req: any, res: any) {
     }
 
     const data = await response.json();
+    res.setHeader('Cache-Control', 's-maxage=60, stale-while-revalidate=120');
     return res.status(200).json(data);
 
-  } catch (error: any) {
-    console.error("Error fatal en el servidor:", error);
-    return res.status(500).json({ error: 'Error interno en Vercel', detalles: error.message });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Error desconocido';
+    console.error('Error en proxy Overpass:', error);
+    return res.status(500).json({ error: message });
   }
 }

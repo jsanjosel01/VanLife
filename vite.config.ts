@@ -18,7 +18,11 @@ export default defineConfig({
       '/api/overpass': {
         target: 'https://overpass-api.de/api/interpreter',
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api\/overpass/, '')
+        rewrite: (path) => path.replace(/^\/api\/overpass/, ''),
+        headers: {
+          'User-Agent': 'VanLife-App/1.0 (contacto@vanlife.app)',
+          'Referer': 'https://vanlife.app'
+        }
       }
     }
   }
